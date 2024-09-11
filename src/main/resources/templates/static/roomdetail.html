@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>WebSocket ChatRoom</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/dist/css/bootstrap.min.css">
+    <style>
+        #app {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div>
+        <h2 id="roomName"></h2>
+    </div>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <label class="input-group-text">내용</label>
+        </div>
+        <input type="text" class="form-control" id="messageInput">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="sendButton">보내기</button>
+        </div>
+    </div>
+    <ul class="list-group" id="messages">
+    </ul>
+</div>
+
+<!-- JavaScript -->
+<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
+<script>
+    // Variables
+    var roomId = localStorage.getItem('wschat.roomId');
+    var sender = localStorage.getItem('wschat.sender');
+    var sock = new SockJS("/ws-stomp");
+    var ws = Stomp.over(sock);
+    var reconnect = 0;
+
+    // Functions
+    function findRoom() {
+        fetch('/chat/room/' + roomId)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("roomName").innerHTML = data.name;
+            });
+    }
+
+    function sendMessage() {
+        var messageInput = document.getElementById("messageInput");
+        var message = messageInput.value;
+        ws.send("/pub/chat/message", {}, JSON.stringify({
+            type: 'TALK',
+            roomId: roomId,
+            sender: sender,
+            message: message
+        }));
+        messageInput.value = '';
+    }
+
+    function recvMessage(recv) {
+        var messagesList = document.getElementById("messages");
+        var messageElement = document.createElement("li");
+        messageElement.classList.add("list-group-item");
+        messageElement.innerHTML = `${recv.sender} - ${recv.message}`;
+        messagesList.insertBefore(messageElement, messagesList.firstChild);
+    }
+
+    function connect() {
+        ws.connect({}, function(frame) {
+            document.getElementById("app").style.display = "block"; // Show the app after connection
+            ws.subscribe("/sub/chat/room/" + roomId, function(message) {
+                var recv = JSON.parse(message.body);
+                recvMessage(recv);
+            });
+            ws.send("/pub/chat/message", {}, JSON.stringify({
+                type: 'ENTER',
+                roomId: roomId,
+                sender: sender
+            }));
+        }, function(error) {
+            if (reconnect++ <= 5) {
+                setTimeout(function() {
+                    console.log("connection reconnect");
+                    sock = new SockJS("/ws-stomp");
+                    ws = Stomp.over(sock);
+                    connect();
+                }, 10 * 1000);
+            }
+        });
+    }
+
+    // Event listeners
+    document.getElementById("sendButton").addEventListener("click", sendMessage);
+    document.getElementById("messageInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    });
+
+    // Initialize
+    findRoom();
+    connect();
+</script>
+</body>
+</html>
