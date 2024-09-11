@@ -1,8 +1,8 @@
-package com.example.studywithme.dto;
+package com.example.studywithme.pojo;
 
 import lombok.Getter;
 import lombok.Setter;
-
+//사실상 dto 임시
 @Getter
 @Setter
 public class ChatMessage {
