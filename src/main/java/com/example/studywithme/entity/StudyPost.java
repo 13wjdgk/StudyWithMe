@@ -14,7 +14,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "StudyPosts")
+@Table(name = "Study_Posts")
 public class StudyPost {
 
 	@Id
@@ -54,5 +54,4 @@ public class StudyPost {
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 
-	// Getters and Setters
 }

@@ -7,10 +7,11 @@ import jakarta.persistence.JoinColumn;
 
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-
+import lombok.Getter;
 
 @Entity
 @Table(name = "Users")
+@Getter
 public class User {
 
 	@Id
