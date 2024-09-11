@@ -17,8 +17,6 @@ import lombok.Builder;
 @Table(name = "Category")
 public class Category {
 
-	// github test
-
 	@Id
 	@Column(name = "category_id", nullable = false)
 	private String categoryId ;
