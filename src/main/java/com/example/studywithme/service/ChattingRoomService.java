@@ -22,16 +22,17 @@ public class ChattingRoomService {
     private final ChattingRoomRepository chattingRoomRepository;
     private final UsersRepository usersRepository;
     private final StudyPostRepository studyPostRepository;
-    @PostConstruct
-    public ChatRoomResult findAllRoom() {
+
+    public ChatRoomResult findAllRoom(String userId) {
         List<ChatRoomDto> chatRoomDto = new ArrayList<>();
-        List<ChattingRoom> chatRooms= chattingRoomRepository.findAll();
+        List<ChattingRoom> chatRooms= chattingParticipantRepository.findChatRoomsByUserId(userId);
         System.out.println(chatRooms);
         ChatRoomResult chatRoomResult = new ChatRoomResult();
         chatRooms.forEach(room -> {
             ChatRoomDto chatRoomDtoDto = new ChatRoomDto();
             chatRoomDtoDto.setRoomId(room.getChatroomId());
             chatRoomDtoDto.setName(room.getName());
+            chatRoomDtoDto.setRecruitmentPost(room.getRecruitmentPost());
             chatRoomDto.add(chatRoomDtoDto);
             System.out.println(chatRoomDtoDto);
         });

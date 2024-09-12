@@ -19,16 +19,17 @@ public class ChatRoomController {
 
     // 채팅 리스트 화면
     @GetMapping("/room")
-    public String rooms(Model model) {
-        return "room";  // 앞의 / 제거
+    @ResponseBody
+    public ChatRoomResult rooms(@RequestParam String userId) {
+        return  chattingRoomService.findAllRoom(userId);
     }
 
     // 모든 채팅방 목록 반환
-    @GetMapping("/rooms")
-    @ResponseBody
-    public ChatRoomResult room() {
-        return chattingRoomService.findAllRoom();
-    }
+    //@GetMapping("/rooms")
+    //@ResponseBody
+    //public ChatRoomResult room() {
+        //return chattingRoomService.findAllRoom();
+   // }
 
     // 채팅방 생성
     @PostMapping("/room")
