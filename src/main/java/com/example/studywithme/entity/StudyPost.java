@@ -12,8 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.*;
 
 @Entity
+@Data
 @Table(name = "StudyPosts")
 public class StudyPost {
 
@@ -43,7 +45,7 @@ public class StudyPost {
 	@Column(name = "max_members")
 	private Integer maxMembers;
 
-	@Column(name = "created_at")
+	@Column(name = "created_at", updatable = false, insertable = false)
 	private Timestamp createdAt;
 
 	@ManyToOne

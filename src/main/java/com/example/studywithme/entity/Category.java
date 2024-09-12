@@ -11,9 +11,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 
 import jakarta.persistence.Table;
-import lombok.Builder;
+import lombok.*;
 
 @Entity
+@Data
 @Table(name = "Category")
 public class Category {
 

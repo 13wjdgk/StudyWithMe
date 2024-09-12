@@ -7,9 +7,11 @@ import jakarta.persistence.JoinColumn;
 
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.*;
 
 
 @Entity
+@Data
 @Table(name = "Users")
 public class User {
 
