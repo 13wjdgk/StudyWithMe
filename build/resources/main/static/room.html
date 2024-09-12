@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <title>WebSocket 채팅</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/dist/css/bootstrap.min.css">
+    <style>
+        #app {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>채팅방 리스트</h3>
+        </div>
+    </div>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <label class="input-group-text">방제목</label>
+        </div>
+        <input type="text" class="form-control" id="roomNameInput">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="createRoomButton">채팅방 개설</button>
+        </div>
+    </div>
+    <!-- 테이블로 채팅방 리스트 출력 -->
+    <button class="btn btn-primary" type="button" id="enterRoom">입장
+    <table class="table table-hover mt-3" id="chatRoomTable">
+        <thead>
+        <tr>
+            <th>방 제목</th>
+            <th>방 ID</th>
+        </tr>
+        </thead>
+        <tbody id="chatRoomList">  </button>
+        </tbody>
+    </table>
+</div>
+<!-- JavaScript -->
+<script>
+    window.onload = function () {
+        findAllRooms();
+        document.querySelector("#createRoomButton").onclick=createRoom;
+        document.querySelector("#enterRoom").onclick=enterRoom;
+    }
+    //const app = document.getElementById("app");
+    //const roomNameInput = document.getElementById("roomNameInput");
+    //const createRoomButton = document.getElementById("createRoomButton");
+    //const chatRoomList = document.getElementById("chatRoomList");*/
+        async function findAllRooms() {
+            let url='/chat/rooms';
+            try {
+                let response = await fetch(url);
+                let chatroomlist = await response.json();
+                console.log(chatroomlist);
+                if(chatroomlist.length>1) {
+
+                }
+
+            }catch (eroor) {
+                alert("채팅방 조회 과정 중 오류가 발생했습니다.");
+                console.log(error);
+            }
+
+        }
+
+        function createRoom() {
+            const roomName = roomNameInput.value;
+            if (roomName === "") {
+                alert("방 제목을 입력해 주십시오.");
+                return;
+            }
+
+            const params = new URLSearchParams();
+            params.append("name", roomName);
+
+            fetch('/chat/room', {
+                method: 'POST',
+                body: params
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.name + " 방 개설에 성공하였습니다.");
+                    roomNameInput.value = '';
+                    findAllRooms();
+                })
+                .catch(error => {
+                    console.error('채팅방 개설 중 오류가 발생했습니다:', error);
+                    alert("채팅방 개설에 실패하였습니다.");
+                });
+        }
+
+        function enterRoom(roomId) {
+            const sender = prompt('대화명을 입력해 주세요.');
+            if (sender !== "") {
+                localStorage.setItem('wschat.sender', sender);
+                localStorage.setItem('wschat.roomId', roomId);
+                window.location.href = `/room/enter/${roomId}`;
+            }
+        }
+
+</script>
+</body>
+</html>
