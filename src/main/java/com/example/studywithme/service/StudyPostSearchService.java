@@ -21,19 +21,17 @@ public class StudyPostSearchService {
 	public List<StudyPostDTO> searchStudyPostList(SortType sortType , int page, int size,String userId) {
 		User user = usersRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
 		if(sortType.equals(SortType.LATEST)){
-			studyPostRepository.findAllSortedByLatest(page, size);
-			return null;
+			return studyPostRepository.findAllSortedByLatest(page, size);
 		}
 		else if(sortType.equals(SortType.POPULAR)){
-			studyPostRepository.findAllSortedByPopular(page, size);
-			return null;
+			return studyPostRepository.findAllSortedByPopular(page, size);
+
 		}
 		else if(sortType.equals(SortType.RECOMMEND)){
 			return studyPostRepository.findAllSortedByRecommend(page, size,user.getCategory().getCategoryId());
 		}
 		else if(sortType.equals(SortType.OLDEST)){
-			studyPostRepository.findAllSortedByOldest(page, size);
-			return null;
+			return studyPostRepository.findAllSortedByOldest(page, size);
 		}
 
 		return null;

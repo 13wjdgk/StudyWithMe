@@ -1,6 +1,6 @@
 package com.example.studywithme.entity;
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.sql.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,13 +32,13 @@ public class StudyPost {
 	private String studyType;
 
 	@Column(name = "study_date")
-	private LocalDate studyDate;
+	private Date studyDate;
 
 	@Column(name = "end_date")
-	private LocalDate endDate;
+	private Date endDate;
 
 	@Column(name = "deadline")
-	private LocalDate deadline;
+	private Date deadline;
 
 	@Column(name = "max_members")
 	private Integer maxMembers;

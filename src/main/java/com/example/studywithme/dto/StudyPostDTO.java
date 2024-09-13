@@ -1,5 +1,6 @@
 package com.example.studywithme.dto;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
@@ -16,9 +17,9 @@ public class StudyPostDTO {
 	private String title;
 	private String description;
 	private String studyType;
-	private LocalDate studyDate;
-	private LocalDate endDate;
-	private LocalDate deadline;
+	private Date studyDate;
+	private Date endDate;
+	private Date deadline;
 	private Integer maxMembers;
 	private Timestamp createdAt;
 	private String categoryId;
@@ -34,9 +35,8 @@ public class StudyPostDTO {
 	private Boolean etc;
 	private MeetType meetType;
 
-	// Constructor
-	public StudyPostDTO(Integer postId, String title, String description, String studyType, LocalDate studyDate,
-		LocalDate endDate, LocalDate deadline, Integer maxMembers, Timestamp createdAt, String categoryId,
+	public StudyPostDTO(Integer postId, String title, String description, String studyType, Date studyDate,
+		Date endDate, Date deadline, Integer maxMembers, Timestamp createdAt, String categoryId,
 		Boolean language, Boolean certification, Boolean major, Boolean career, Boolean exam,
 		Boolean hobbies, Boolean programming, Boolean selfDirected, Boolean etc, String meetType) {
 		this.postId = postId;
