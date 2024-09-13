@@ -17,7 +17,6 @@ import java.util.*;
 @Service
 public class ChattingRoomService {
 
-    private final ChattingRepository chattingRepository;
     private final ChattingParticipantRepository chattingParticipantRepository;
     private final ChattingRoomRepository chattingRoomRepository;
     private final UsersRepository usersRepository;
@@ -26,7 +25,6 @@ public class ChattingRoomService {
     public ChatRoomResult findAllRoom(String userId) {
         List<ChatRoomDto> chatRoomDto = new ArrayList<>();
         List<ChattingRoom> chatRooms= chattingParticipantRepository.findChatRoomsByUserId(userId);
-        System.out.println(chatRooms);
         ChatRoomResult chatRoomResult = new ChatRoomResult();
         chatRooms.forEach(room -> {
             ChatRoomDto chatRoomDtoDto = new ChatRoomDto();
@@ -34,11 +32,9 @@ public class ChattingRoomService {
             chatRoomDtoDto.setName(room.getName());
             chatRoomDtoDto.setRecruitmentPost(room.getRecruitmentPost());
             chatRoomDto.add(chatRoomDtoDto);
-            System.out.println(chatRoomDtoDto);
         });
         chatRoomResult.setResult("success");
         chatRoomResult.setChatRoomDtos(chatRoomDto);
-        System.out.println(chatRoomResult);
         return chatRoomResult;
     }
     public ChatRoomResult createChatRoom(String name,String userid,Integer post_id){
@@ -67,7 +63,7 @@ public class ChattingRoomService {
 
             Optional<User> optionalUser=usersRepository.findById(userid);
             System.out.println(userid);
-            System.out.println(optionalUser);
+            System.out.println(chattingRoom);
             User user=new User();
             if (optionalUser.isPresent()) {
                  user = optionalUser.get();
