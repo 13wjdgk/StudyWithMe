@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디 글 작성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+        }
+        label {
+            font-size: 16px;
+            margin-top: 10px;
+            display: block;
+            color: #555;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        textarea {
+            height: 100px;
+        }
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .checkbox-group label {
+            display: inline-flex;
+            align-items: center;
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+        .submit-btn {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>스터디 글 작성</h1>
+
+    <form id="createForm">
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">내용:</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="studyType">스터디 유형:</label>
+        <input type="text" id="studyType" name="studyType" required>
+
+        <label for="studyDate">스터디 날짜:</label>
+        <input type="date" id="studyDate" name="studyDate" required>
+
+        <label for="endDate">종료 날짜:</label>
+        <input type="date" id="endDate" name="endDate" required>
+
+        <label for="deadline">모집 마감일:</label>
+        <input type="date" id="deadline" name="deadline" required>
+
+        <label for="maxMembers">최대 인원:</label>
+        <input type="number" id="maxMembers" name="maxMembers" required>
+
+        <h3>카테고리 선택</h3>
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="language" name="language"> 언어</label>
+            <label><input type="checkbox" id="certification" name="certification"> 자격증</label>
+            <label><input type="checkbox" id="major" name="major"> 전공</label>
+            <label><input type="checkbox" id="career" name="career"> 경력</label>
+            <label><input type="checkbox" id="exam" name="exam"> 시험</label>
+            <label><input type="checkbox" id="hobbies" name="hobbies"> 취미</label>
+            <label><input type="checkbox" id="programming" name="programming"> 프로그래밍</label>
+            <label><input type="checkbox" id="selfDirected" name="selfDirected"> 자기주도학습</label>
+            <label><input type="checkbox" id="etc" name="etc"> 기타</label>
+        </div>
+
+        <label for="meetType">대면/비대면:</label>
+        <select id="meetType" name="meetType">
+            <option value="대면">대면</option>
+            <option value="비대면">비대면</option>
+        </select>
+
+        <div class="submit-btn">
+            <button type="submit">글 작성</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 글 작성 시 데이터 전송
+    document.getElementById('createForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = {
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value,
+            studyType: document.getElementById('studyType').value,
+            studyDate: document.getElementById('studyDate').value,
+            endDate: document.getElementById('endDate').value,
+            deadline: document.getElementById('deadline').value,
+            maxMembers: document.getElementById('maxMembers').value,
+            userId: 'testUser001',  // 나중에 실제 유저 정보로 대체
+            language: document.getElementById('language').checked,
+            certification: document.getElementById('certification').checked,
+            major: document.getElementById('major').checked,
+            career: document.getElementById('career').checked,
+            exam: document.getElementById('exam').checked,
+            hobbies: document.getElementById('hobbies').checked,
+            programming: document.getElementById('programming').checked,
+            selfDirected: document.getElementById('selfDirected').checked,
+            etc: document.getElementById('etc').checked,
+            meetType: document.getElementById('meetType').value,
+        };
+
+        fetch('/api/study-posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('글 작성 성공!');
+                    window.location.href = '/list.html';
+                } else {
+                    alert('글 작성 실패');
+                }
+            })
+            .catch(error => {
+                console.error('글 작성 중 오류:', error);
+            });
+    });
+</script>
+</body>
+</html>

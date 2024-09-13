@@ -3,14 +3,8 @@ package com.example.studywithme.entity;
 
 import com.example.studywithme.enums.MeetType;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Id;
-
-import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
@@ -19,8 +13,9 @@ import lombok.*;
 public class Category {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "category_id", nullable = false)
-	private String categoryId ;
+	private int categoryId ;
 
 	@Column(name = "language")
 	private Boolean language = false;

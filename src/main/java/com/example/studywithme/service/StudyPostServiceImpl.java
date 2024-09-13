@@ -4,23 +4,52 @@ import com.example.studywithme.dto.StudyPostDto;
 import com.example.studywithme.entity.Category;
 import com.example.studywithme.entity.StudyPost;
 import com.example.studywithme.entity.User;
+import com.example.studywithme.repository.CategoryRepository;
 import com.example.studywithme.repository.StudyPostRepository;
-import com.example.studywithme.service.StudyPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.sql.Timestamp;
 
 @Service
 public class StudyPostServiceImpl implements StudyPostService {
 
     private final StudyPostRepository studyPostRepository;
+    private final CategoryRepository categoryRepository;
+
+    // 테스트용 유저 ID 선언 (모든 메서드에서 사용)
+    private final String testUserId = "user002";  // 실제 구현에서는 세션에서 유저 ID를 가져올 예정
 
     @Autowired
-    public StudyPostServiceImpl(StudyPostRepository studyPostRepository) {
+    public StudyPostServiceImpl(StudyPostRepository studyPostRepository, CategoryRepository categoryRepository) {
         this.studyPostRepository = studyPostRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public StudyPostDto createStudyPost(StudyPostDto studyPostDto) {
+        // 1. 새로운 카테고리 생성 (항상 새로운 카테고리)
+        Category category = new Category();
+        category.setLanguage(studyPostDto.getLanguage());
+        category.setCertification(studyPostDto.getCertification());
+        category.setMajor(studyPostDto.getMajor());
+        category.setCareer(studyPostDto.getCareer());
+        category.setExam(studyPostDto.getExam());
+        category.setHobbies(studyPostDto.getHobbies());
+        category.setProgramming(studyPostDto.getProgramming());
+        category.setSelfDirected(studyPostDto.getSelfDirected());
+        category.setEtc(studyPostDto.getEtc());
+        category.setMeetType(studyPostDto.getMeetType());
+
+        Category savedCategory = categoryRepository.save(category);
+
+        // 2. 유저 정보 생성
+        User user = new User();
+        user.setUserId(testUserId);
+
+        // 3. 글 작성 정보 설정
         StudyPost studyPost = new StudyPost();
         studyPost.setTitle(studyPostDto.getTitle());
         studyPost.setDescription(studyPostDto.getDescription());
@@ -29,65 +58,23 @@ public class StudyPostServiceImpl implements StudyPostService {
         studyPost.setEndDate(studyPostDto.getEndDate());
         studyPost.setDeadline(studyPostDto.getDeadline());
         studyPost.setMaxMembers(studyPostDto.getMaxMembers());
-
-        // 테스트용으로 ID
-        String testUserId = "user001";
-        String categoryId = studyPostDto.getCategoryId();
-
-        // 테스트를 위한 가짜 User 및 Category 객체 생성
-        User user = new User();
-        user.setUserId(testUserId);
-        studyPost.setUser(user);
-
-        Category category = new Category();
-        category.setCategoryId(categoryId);
-        studyPost.setCategory(category);
+        studyPost.setCreatedAt(new Timestamp(System.currentTimeMillis()));  // 현재 시각 자동 생성
+        studyPost.setCategory(savedCategory);  // 저장된 카테고리 연결
+        studyPost.setUser(user);  // 유저 연결
 
         StudyPost savedPost = studyPostRepository.save(studyPost);
-
-        // 저장된 데이터를 다시 DTO로 변환하여 반환
-        StudyPostDto savedPostDto = new StudyPostDto();
-        savedPostDto.setPostId(savedPost.getPostId());
-        savedPostDto.setTitle(savedPost.getTitle());
-        savedPostDto.setDescription(savedPost.getDescription());
-        savedPostDto.setStudyType(savedPost.getStudyType());
-        savedPostDto.setStudyDate(savedPost.getStudyDate());
-        savedPostDto.setEndDate(savedPost.getEndDate());
-        savedPostDto.setDeadline(savedPost.getDeadline());
-        savedPostDto.setMaxMembers(savedPost.getMaxMembers());
-
-        // 테스트용 User와 Category의 ID를 DTO에 설정
-        savedPostDto.setUserId(testUserId);
-        savedPostDto.setCategoryId(categoryId);
-
-        return savedPostDto;
-    }
-
-    // 글 상세
-    @Override
-    public StudyPostDto getStudyPostById(int postId) {
-        StudyPost studyPost = studyPostRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + postId));
-
-        StudyPostDto studyPostDto = new StudyPostDto();
-        studyPostDto.setPostId(studyPost.getPostId());
-        studyPostDto.setTitle(studyPost.getTitle());
-        studyPostDto.setDescription(studyPost.getDescription());
-        studyPostDto.setStudyType(studyPost.getStudyType());
-        studyPostDto.setStudyDate(studyPost.getStudyDate());
-        studyPostDto.setEndDate(studyPost.getEndDate());
-        studyPostDto.setDeadline(studyPost.getDeadline());
-        studyPostDto.setMaxMembers(studyPost.getMaxMembers());
-        studyPostDto.setUserId(studyPost.getUser().getUserId());
-        studyPostDto.setCategoryId(studyPost.getCategory().getCategoryId());
-
-        return studyPostDto;
+        return convertToDto(savedPost);
     }
 
     @Override
     public StudyPostDto updateStudyPost(int postId, StudyPostDto studyPostDto) {
         StudyPost studyPost = studyPostRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + postId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid post ID: " + postId));
+
+        // 작성자와 현재 유저 ID 비교
+        if (!studyPost.getUser().getUserId().equals(testUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to update this post.");
+        }
 
         // 기존 글 정보를 수정
         studyPost.setTitle(studyPostDto.getTitle());
@@ -98,30 +85,52 @@ public class StudyPostServiceImpl implements StudyPostService {
         studyPost.setDeadline(studyPostDto.getDeadline());
         studyPost.setMaxMembers(studyPostDto.getMaxMembers());
 
-        // 수정된 정보를 저장
         StudyPost updatedPost = studyPostRepository.save(studyPost);
-
-        // 수정된 데이터를 DTO로 변환하여 반환
-        StudyPostDto updatedPostDto = new StudyPostDto();
-        updatedPostDto.setPostId(updatedPost.getPostId());
-        updatedPostDto.setTitle(updatedPost.getTitle());
-        updatedPostDto.setDescription(updatedPost.getDescription());
-        updatedPostDto.setStudyType(updatedPost.getStudyType());
-        updatedPostDto.setStudyDate(updatedPost.getStudyDate());
-        updatedPostDto.setEndDate(updatedPost.getEndDate());
-        updatedPostDto.setDeadline(updatedPost.getDeadline());
-        updatedPostDto.setMaxMembers(updatedPost.getMaxMembers());
-        updatedPostDto.setUserId(updatedPost.getUser().getUserId());
-        updatedPostDto.setCategoryId(updatedPost.getCategory().getCategoryId());
-
-        return updatedPostDto;
+        return convertToDto(updatedPost);
     }
 
     @Override
     public void deleteStudyPost(int postId) {
         StudyPost studyPost = studyPostRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + postId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid post ID: " + postId));
+
+        // 작성자와 현재 유저 ID 비교
+        if (!studyPost.getUser().getUserId().equals(testUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to delete this post.");
+        }
 
         studyPostRepository.delete(studyPost);
+    }
+
+    @Override
+    public StudyPostDto getStudyPostById(int postId) {
+        StudyPost studyPost = studyPostRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + postId));
+        return convertToDto(studyPost);
+    }
+
+    private StudyPostDto convertToDto(StudyPost studyPost) {
+        return new StudyPostDto(
+                studyPost.getPostId(),
+                studyPost.getTitle(),
+                studyPost.getDescription(),
+                studyPost.getStudyType(),
+                studyPost.getStudyDate(),
+                studyPost.getEndDate(),
+                studyPost.getDeadline(),
+                studyPost.getMaxMembers(),
+                studyPost.getCreatedAt(),
+                studyPost.getCategory().getCategoryId(),
+                studyPost.getCategory().getLanguage(),
+                studyPost.getCategory().getCertification(),
+                studyPost.getCategory().getMajor(),
+                studyPost.getCategory().getCareer(),
+                studyPost.getCategory().getExam(),
+                studyPost.getCategory().getHobbies(),
+                studyPost.getCategory().getProgramming(),
+                studyPost.getCategory().getSelfDirected(),
+                studyPost.getCategory().getEtc(),
+                studyPost.getCategory().getMeetType().name()
+        );
     }
 }
