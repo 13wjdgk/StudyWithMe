@@ -36,14 +36,48 @@
 <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 <script>
+
+    window.onload = function () {
+        findChatLog();
+        findRoom();
+        connect();
+        document.querySelector("#sendButton").addEventListener("click", sendMessage);
+        document.querySelector("#messageInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+    }
+
     // Variables
     var roomId = localStorage.getItem('wschat.roomId');
     var sender = localStorage.getItem('wschat.sender');
+    var userId = localStorage.getItem('wschat.userId');
     var sock = new SockJS("/ws-stomp");
     var ws = Stomp.over(sock);
     var reconnect = 0;
 
-    // Functions
+    async function findChatLog() {
+        // userId를 쿼리 파라미터로 추가한 URL 생성
+        let url = `/chat/chatting?roomId=${encodeURIComponent(roomId)}`;
+        try {
+            let response = await fetch(url, {
+                method: 'GET',
+            });
+            let chattingLogList = await response.json();
+            console.log(chattingLogList);
+
+            if (chattingLogList.result === 'success') {
+                console.log("채팅기록 불러오기 성공.");
+            } else {
+                console.error("채팅기록 불러오기 중 오류가 발생했습니다.");
+            }
+        } catch (error) {
+            alert("채팅기록 조회 과정 중 오류가 발생했습니다.");
+            console.error(error);
+        }
+    }
+
     function findRoom() {
         fetch('/chat/room/' + roomId)
             .then(response => response.json())
@@ -59,7 +93,8 @@
             type: 'TALK',
             roomId: roomId,
             sender: sender,
-            message: message
+            message: message,
+            senderId: userId
         }));
         messageInput.value = '';
     }
@@ -82,7 +117,8 @@
             ws.send("/pub/chat/message", {}, JSON.stringify({
                 type: 'ENTER',
                 roomId: roomId,
-                sender: sender
+                sender: sender,
+                senderId: userId
             }));
         }, function(error) {
             if (reconnect++ <= 5) {
@@ -96,17 +132,6 @@
         });
     }
 
-    // Event listeners
-    document.getElementById("sendButton").addEventListener("click", sendMessage);
-    document.getElementById("messageInput").addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            sendMessage();
-        }
-    });
-
-    // Initialize
-    findRoom();
-    connect();
 </script>
 </body>
 </html>
