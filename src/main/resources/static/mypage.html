@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원정보 수정</title>
+  <style>
+    /* 페이지 전체 레이아웃 */
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f8f9fa;
+      margin: 0;
+    }
+    /* 헤더 스타일 */
+    h1 {
+      color: #ffbf00;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .register-container {
+      display: flow;
+      width: 350px;
+    }
+
+    .container hr {
+      margin-bottom: 20px;
+    }
+
+    /* 입력 필드 스타일 */
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #343a40;
+    }
+
+    .form-group input[type="text"], .form-group input[type="password"],
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    /* 버튼 및 링크 스타일 */
+    button, a.button-link {
+      background-color: #ffbf00;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 1rem;
+      margin-top: 10px;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover, a.button-link:hover {
+      background-color: #ffbf00;
+    }
+
+    button {
+      margin-bottom: 10px;
+    }
+
+    /* 로그인 컨테이너 특화 스타일 */
+    .register-container .form-group input[type="text"], .register-container .form-group input[type="text"]
+    {
+      /* Only styles specific to login container */
+      border: 1px solid #ccc;
+    }
+
+    .register-container button {
+      margin-top: 20px; /* Ensures correct spacing for login button */
+    }
+
+    /* 레지스터 컨테이너 특화 스타일 */
+    .register-container .form-group select {
+      /* Specific styles for select fields if needed */
+
+    }
+
+    .label-title {
+      font-size: 1.3em;
+      background-color: lightgoldenrodyellow;
+
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>회원정보 수정</h1>
+  <form id="edit-user-form">
+    <label for="userId">아이디</label>
+    <input type="text" id="userId" name="userId" readonly>
+
+    <label for="nickname">닉네임</label>
+    <input type="text" id="nickname" name="nickname" value="nickname" required>
+
+    <label for="new-password">새로운 비밀번호</label>
+    <input type="text" id="new-password" name="new-password">
+    <p style="color: crimson"> 비밀번호 변경을 원하지 않으시면 기존 비밀번호를 입력해주세요 </p>
+
+    <hr>
+
+    <label class="label-title">스터디 방식</label>
+    <div class="study-method">
+      <label for="virtual">비대면</label>
+      <input type="radio" id="virtual" name="studyMethod" value="비대면" checked>
+      <label for="face-to-face">대면</label>
+      <input type="radio" id="face-to-face" name="studyMethod" value="대면">
+      <label for="no-preference">상관없음</label>
+      <input type="radio" id="no-preference" name="studyMethod" value="상관없음">
+    </div>
+
+    <hr>
+
+    <label class="label-title">관심사 카테고리</label>
+    <div class="categories">
+
+      <label for="language">어학</label>
+      <input type="checkbox" id="language" name="category" value="어학">
+
+      <label for="certification">자격증</label>
+      <input type="checkbox" id="certification" name="category" value="자격증">
+
+      <label for="major">전공</label>
+      <input type="checkbox" id="major" name="category" value="전공">
+
+      <label for="employment">취업</label>
+      <input type="checkbox" id="employment" name="category" value="취업">
+
+      <label for="exam">시험</label>
+      <input type="checkbox" id="exam" name="category" value="시험">
+
+      <label for="hobby">취미</label>
+      <input type="checkbox" id="hobby" name="category" value="취미">
+
+      <label for="programming">프로그래밍</label>
+      <input type="checkbox" id="programming" name="category" value="프로그래밍">
+
+      <label for="self-study">자율</label>
+      <input type="checkbox" id="self-study" name="category" value="자율">
+
+      <label for="other">기타</label>
+      <input type="checkbox" id="other" name="category" value="기타">
+
+
+    </div>
+
+    <button type="button" id="cancel-btn" class="cancel-btn">취소</button>
+    <button type="submit" class="submit-btn">수정하기</button>
+
+  </form>
+</div>
+
+<script>
+  let userDto;
+  let categoryId;
+
+  document.addEventListener("DOMContentLoaded", function () {
+    fetchUserDetails();
+
+    document.getElementById("edit-user-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (document.getElementById("new-password").value === '') {
+        alert("비밀번호를 입력해주세요");
+      } else {
+        updateUserDetails();
+      }
+    });
+
+    document.getElementById("cancel-btn").addEventListener("click", function () {
+      window.location.href = "/index.html";
+    });
+
+  });
+
+  async function fetchUserDetails() {
+    // // 세션에서 현재 사용자 정보 가져오기
+    // const ud = sessionStorage.getItem("userDto");
+    // const userId = ud.userId;
+
+    await fetch(`/studywithme/users`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.result === "success") {
+                populateForm(data.userDto);
+                categoryId = data.userDto.category.id;
+              } else {
+                alert("Failed to retrieve user details.");
+              }
+            })
+            .catch(error => console.error("Error fetching user details:", error));
+  }
+
+  function populateForm(user) {
+    document.getElementById("userId").value = user.userId; // 아이디는 수정 불가(read-only)
+    document.getElementById("nickname").value = user.nickname;
+
+    // 비밀번호 입력란 초기화
+    document.getElementById("new-password").value = '';
+  }
+
+  async function updateUserDetails() {
+    const url = `/studywithme/users`;
+
+    // 입력값 가져오기
+    let userId = document.querySelector("#userId").value;
+    let nickname = document.querySelector("#nickname").value;
+    let password = document.querySelector("#new-password").value;
+    let categoryid = categoryId;
+
+    let studyMethod = [
+      document.querySelector("input[name='studyMethod'][value='비대면']").checked,
+      document.querySelector("input[name='studyMethod'][value='대면']").checked,
+      document.querySelector("input[name='studyMethod'][value='상관없음']").checked
+    ];
+    let meetType;
+    for ( i = 0; i < 3; i++){
+      if( studyMethod[i] == true ){
+        if( i == 0 ){
+          meetType = "비대면";
+        }else if( i == 1 ){
+          meetType = "대면";
+        }else {
+          meetType = "상관없음";
+        }
+      }
+    }
+    const user = {
+      userId: userId,
+      nickname: nickname,
+      password: password,
+      category: {
+        id: categoryid,
+        // language: document.querySelector("input[name='categories'][value='language']").checked,
+        // certification: document.querySelector("input[name='categories'][value='certification']").checked,
+        // major: document.querySelector("input[name='categories'][value='major']").checked,
+        // career: document.querySelector("input[name='categories'][value='employment']").checked,
+        // exam: document.querySelector("input[name='categories'][value='exam']").checked,
+        // hobbies: document.querySelector("input[name='categories'][value='hobby']").checked,
+        // programming: document.querySelector("input[name='categories'][value='programming']").checked,
+        // selfDirected: document.querySelector("input[name='categories'][value='self-study']").checked,
+        // etc: document.querySelector("input[name='categories'][value='other']").checked,
+        language: document.getElementById("language").checked,
+        certification: document.getElementById("certification").checked,
+        major: document.getElementById("major").checked,
+        career: document.getElementById("employment").checked,
+        exam: document.getElementById("exam").checked,
+        hobbies: document.getElementById("hobby").checked,
+        programming: document.getElementById("programming").checked,
+        selfDirected: document.getElementById("self-study").checked,
+        etc: document.getElementById("other").checked,
+        meetType: meetType
+      }
+    };
+
+    let fetchOptions = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(user)
+    };
+
+    try {
+      const response = await fetch(url, fetchOptions);
+      const data = await response.json();
+      if (data.result === "success") {
+        alert("사용자 정보가 업데이트 되었습니다.");
+        window.location.href = "/index.html";
+      } else {
+        alert("사용자 정보 업데이트에 실패하였습니다.");
+      }
+    } catch (error) {
+      console.error("Error updating user details:", error);
+      alert("서버와의 통신 오류가 발생했습니다.");
+    }
+  }
+</script>
+</body>
+</html>

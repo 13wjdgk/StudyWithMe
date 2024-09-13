@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.studywithme.entity.User;
 
-public interface UsersRepository extends JpaRepository<User, String> {
+import java.util.Optional;
 
+public interface UsersRepository extends JpaRepository<User, String> {
+    Optional<User> findById(String userId);
 }
