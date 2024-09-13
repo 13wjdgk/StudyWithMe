@@ -40,12 +40,12 @@ public class ChatRoomController {
         return chattingRoomService.createChatRoom(name,userId,postId);
     }
 
-    @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable String roomId) {
-        System.out.println(roomId);
-        model.addAttribute("roomId", roomId);
-        return "roomdetail";  // 앞의 / 제거
-    }
+  //  @GetMapping("/room/enter/{roomId}")
+   // public String roomDetail(Model model, @PathVariable String roomId) {
+    //    System.out.println(roomId);
+    //    model.addAttribute("roomId", roomId);
+     //   return "dd";
+    //}
 
     // 채팅방 입장 화면
 

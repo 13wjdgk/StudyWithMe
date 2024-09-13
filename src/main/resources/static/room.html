@@ -100,7 +100,7 @@
                             <td>${room.recruitmentPost.description}</td>
                             <td>${room.recruitmentPost.studyType}</td>
                             <td>${room.recruitmentPost.studyDate}</td>
-                            <td><button class="btn btn-primary" onclick="enterRoom(${room.roomId})">Enter Room</button></td>
+                            <td><button class="btn btn-primary" onclick="enterRoom(${room.roomId},'user001')">입장</button></td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -135,12 +135,15 @@
             console.log(chatroomlist)
             findUserRoom();
         }
-        function enterRoom(roomId) {
+        function enterRoom(roomId,userId) {
+          //  const roomId = button.getAttribute('roomId');
+           // const userId = button.getAttribute('data-user-id');
             const sender = prompt('대화명을 입력해 주세요.');
             if (sender !== "") {
                 localStorage.setItem('wschat.sender', sender);
                 localStorage.setItem('wschat.roomId', roomId);
-                window.location.href = `/room/enter/${roomId}`;
+                localStorage.setItem('wschat.userId', userId);
+                window.location.href = `/ChatRoomDetail.html`;
             }
             else
             {
