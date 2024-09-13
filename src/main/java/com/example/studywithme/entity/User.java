@@ -7,13 +7,15 @@ import jakarta.persistence.JoinColumn;
 
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
 
+import lombok.*;
+
+@Table(name = "users")
+@NoArgsConstructor
 @Entity
-@Table(name = "Users")
 @Getter
 @Setter
+@ToString
 public class User {
 
 	@Id
@@ -30,6 +32,12 @@ public class User {
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 
-	// Getters and Setters
+	@Builder
+	public User(String userId, String nickname, String password, Category category) {
+		this.userId = userId;
+		this.nickname = nickname;
+		this.password = password;
+		this.category = category;
+	}
 }
 
