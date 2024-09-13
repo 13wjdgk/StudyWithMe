@@ -2,15 +2,12 @@ package com.example.studywithme.repository;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -49,9 +46,9 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 			.collect(Collectors.toList());
 	}
 	// 인기순 기준 정해야함
-	default List<StudyPostDTO> findAllSortedByPopular(int page, int size) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "created_at"));
-		Page<Object[]> results = findAllBy(pageable);
+	default List<StudyPostDTO> findAllSortedByViewCount(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Object[]> results = findAllWithViewCount(pageable);
 		return results.stream()
 			.map(result -> new StudyPostDTO(
 				(Integer) result[0], // postId
@@ -73,7 +70,8 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 				(Boolean) result[16], // programming
 				(Boolean) result[17], // selfDirected
 				(Boolean) result[18], // etc
-				(String) result[19] // meetType
+				(String) result[19],
+				(Integer) result[20]// meetType
 			))
 			.collect(Collectors.toList());
 	}
@@ -162,5 +160,12 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 		,
 		nativeQuery = true)
 	Page<Object[]> findAllByCategory(int categoryId, Pageable pageable);
+
+	@Query(value = " SELECT post.post_id, title, description, study_type, study_date, end_date, deadline,max_members, created_at, user_id, language, certification, major, career, exam, hobbies, programming, self_directed, etc, meet_type, vc.count "
+		+ "FROM Study_Posts post JOIN Category c ON post.category_id = c.category_id JOIN View_Count vc ON post.post_id=vc.post_id order by vc.count desc",
+		countQuery = "SELECT count(*) "
+			+ "FROM Study_Posts post JOIN Category c ON post.category_id = c.category_id JOIN View_Count vc ON post.post_id=vc.post_id",
+		nativeQuery = true)
+	Page<Object[]> findAllWithViewCount( Pageable pageable);
 
 }
