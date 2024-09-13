@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
     implementation 'org.webjars.bower:vue:2.5.16'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
     implementation 'org.webjars:stomp-websocket:2.3.3-1'

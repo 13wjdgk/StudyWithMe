@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import lombok.Data;
 
 @Entity
@@ -45,7 +46,7 @@ public class StudyPost {
 	@Column(name = "max_members")
 	private Integer maxMembers;
 
-	@Column(name = "created_at")
+	@Column(name = "created_at", updatable = false, insertable = false)
 	private Timestamp createdAt;
 
 	@ManyToOne
