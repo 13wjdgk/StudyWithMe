@@ -48,5 +48,4 @@ public class Category {
 	@Column(name = "meet_type")
 	private MeetType meetType = MeetType.대면;
 
-	// Getters and Setters
 }

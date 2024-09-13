@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        /* 페이지 전체 레이아웃 */
+        body {
+            display: flow;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+        /* 헤더 스타일 */
+        h1 {
+            color: #ffbf00;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .register-container {
+            display: flow;
+            width: 350px;
+        }
+
+        .container hr {
+            margin-bottom: 20px;
+        }
+
+        /* 입력 필드 스타일 */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #343a40;
+        }
+
+        .form-group input[type="text"], .form-group input[type="password"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* 버튼 및 링크 스타일 */
+        button, a.button-link {
+            background-color: #ffbf00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-top: 10px;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: #ffea00;
+        }
+
+        a.button-link:hover {
+            background-color: #ffbf00;
+        }
+
+        button {
+            margin-bottom: 10px;
+            background-color: rgba(255, 234, 0, 0.71);
+        }
+
+        a.button-link {
+            background-color: rgba(255, 191, 0, 0.71);
+        }
+
+        /* 로그인 컨테이너 특화 스타일 */
+        .register-container .form-group input[type="text"], .register-container .form-group input[type="text"]
+        {
+            /* Only styles specific to login container */
+            border: 1px solid #ccc;
+        }
+
+        .register-container button {
+            margin-top: 20px; /* Ensures correct spacing for login button */
+        }
+
+        /* 레지스터 컨테이너 특화 스타일 */
+        .register-container .form-group select {
+            /* Specific styles for select fields if needed */
+
+        }
+    </style>
+</head>
+<body>
+  <h1>Study With Me</h1>
+
+  <a href="/login.html" class="button-link">로그인</a>
+  <a href="/register.html" class="button-link">회원가입</a>
+  <hr>
+  <button type="button" id="mypage-btn">마이페이지</button>
+  <button id="logout-btn">로그아웃</button>
+
+  <script>
+      window.onload = function() {
+          let userDto = sessionStorage.getItem("userDto");
+
+          console.log("userDto : ", userDto);
+      }
+      document.getElementById("mypage-btn").addEventListener("click", function () {
+          const userDto = sessionStorage.getItem("userDto");
+          if (userDto == null){
+              alert("로그인 후에 이용 바랍니다");
+              window.location.href = "/login.html";
+          } else {
+              window.location.href = "/mypage.html";
+          }
+      });
+
+      document.getElementById("logout-btn").addEventListener("click", function () {
+          if ( sessionStorage.getItem("userDto") == null ){
+              alert("이미 로그아웃 되었습니다.");
+          } else {
+              sessionStorage.removeItem('userDto');
+              alert('로그아웃 되었습니다.');
+          }
+          // 로그인 페이지로 이동
+          window.location.href = "/login.html";
+      });
+      async function logout () {
+          await fetch(`/studywithme/users`)
+              .then(response => response.json())
+              .then(data => {
+
+                  console.log(data.result);
+                  console.log(data.userDto);
+                  if (data.result === "success") {
+                      // userDto가 null이 아니면 로그아웃 버튼 생성
+                      if (data.userDto != null) {
+                          const buttonContainer = document.getElementById('button-container');
+
+                          // 로그아웃 버튼 생성
+                          const logoutButton = document.createElement('button');
+                          logoutButton.textContent = '로그아웃';
+                          logoutButton.id = 'logoutButton';
+
+                          // 버튼을 컨테이너에 추가
+                          buttonContainer.appendChild(logoutButton);
+
+                          // 로그아웃 버튼 클릭 시 동작 정의
+                          logoutButton.addEventListener('click', function () {
+                              // 로그아웃 로직 (sessionStorage에서 userDto 삭제 등)
+                              sessionStorage.removeItem('userDto');
+                              alert('로그아웃 되었습니다.');
+                              // 로그인 페이지로 이동
+                              window.location.href = "/login.html";
+                          });
+
+
+                      }
+                  } else {
+                      alert("Failed to retrieve user details.");
+                  }
+              })
+              .catch(error => console.error("Error fetching user details:", error));
+
+      }
+  </script>
+
+
+
+</body>
+</html>

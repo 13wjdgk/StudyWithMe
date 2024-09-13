@@ -12,11 +12,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.*;
+
+import lombok.Data;
 
 @Entity
+@Table(name = "Study_Posts")
 @Data
-@Table(name = "StudyPosts")
 public class StudyPost {
 
 	@Id
@@ -56,5 +57,4 @@ public class StudyPost {
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 
-	// Getters and Setters
 }
