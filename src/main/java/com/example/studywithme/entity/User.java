@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import lombok.*;
 
 @Table(name = "users")

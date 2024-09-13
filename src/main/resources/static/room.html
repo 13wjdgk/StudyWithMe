@@ -1,0 +1,157 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room Management</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Light background color */
+        }
+        .table {
+            background-color: #fff; /* White background for the table */
+        }
+        .btn-primary {
+            background-color: #ffc107; /* Yellow color */
+            border-color: #ffc107; /* Border color matching the button */
+        }
+        .btn-primary:hover {
+            background-color: #e0a800; /* Darker yellow on hover */
+            border-color: #e0a800;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4 text-center">Chat Room Management</h1>
+
+    <div class="mb-4">
+        <div class="form-group">
+            <label for="roomNameInput">채팅방 제목:</label>
+            <input type="text" id="roomNameInput" class="form-control" placeholder="방 제목을 입력하세요">
+        </div>
+        <button id="createRoomButton" class="btn btn-primary">채팅방 개설</button>
+    </div>
+
+
+    <div>
+        <table id="chatroom-table" class="table table-bordered table-striped">
+            <thead class="thead-light">
+            <tr>
+                <th>Room ID</th>
+                <th>Name</th>
+                <th>Post ID</th>
+                <th>Post Title</th>
+                <th>Description</th>
+                <th>Study Type</th>
+                <th>Study Date</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="RoomListTable">
+            <!-- 데이터가 여기에 삽입됩니다 -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- JavaScript -->
+<script>
+    window.onload = function () {
+        findUserRoom();
+        document.querySelector("#createRoomButton").onclick=createRoom;
+        document.querySelector("#enterRoom").onclick=enterRoom;
+    }
+    //const app = document.getElementById("app");
+    //const roomNameInput = document.getElementById("roomNameInput");
+    //const createRoomButton = document.getElementById("createRoomButton");
+    //const chatRoomList = document.getElementById("chatRoomList");*/
+        async function findUserRoom() {
+            let userId = 'user001';
+            // userId를 쿼리 파라미터로 추가한 URL 생성
+            let url = `/chat/room?userId=${encodeURIComponent(userId)}`;
+            try {
+                //하드 코딩 나중에 고쳐야함
+                let response = await fetch(url, {
+                    method: 'GET',
+                });
+                let chatroomlist = await response.json();
+                console.log(chatroomlist);
+
+                // 결과가 'success'인지 확인
+                if (chatroomlist.result === 'success') {
+                    let tableBody = document.querySelector('#RoomListTable');
+                    tableBody.innerHTML = ''; // 기존 데이터 지우기
+
+                    // chatRoomDtos 배열을 처리
+                    chatroomlist.chatRoomDtos.forEach(room => {
+                        let row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${room.roomId}</td>
+                            <td>${room.name}</td>
+                            <td>${room.recruitmentPost.postId}</td>
+                            <td>${room.recruitmentPost.title}</td>
+                            <td>${room.recruitmentPost.description}</td>
+                            <td>${room.recruitmentPost.studyType}</td>
+                            <td>${room.recruitmentPost.studyDate}</td>
+                            <td><button class="btn btn-primary" onclick="enterRoom(${room.roomId},'user001')">입장</button></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    console.error("Failed to retrieve chat rooms.");
+                }
+            }catch (eroor) {
+                alert("채팅방 조회 과정 중 오류가 발생했습니다.");
+                console.log(error);
+            }
+
+        }
+
+        async function createRoom() {
+            const roomName = roomNameInput.value;
+            if (roomName === "") {
+                alert("방 제목을 입력해 주십시오.");
+                return;
+            }
+            //만드는 부분 하드코딩 나중에 바꿔야함
+            let url=`/chat/room`;
+
+            let response = await  fetch(url, {
+                method: 'POST',
+                body: new URLSearchParams({
+                    'name': roomName,
+                    'userId': 'user001',
+                    'postId': 1
+                })
+            });
+            let chatroomlist = await response.json();
+            console.log(chatroomlist)
+            findUserRoom();
+        }
+        function enterRoom(roomId,userId) {
+          //  const roomId = button.getAttribute('roomId');
+           // const userId = button.getAttribute('data-user-id');
+            const sender = prompt('대화명을 입력해 주세요.');
+            if (sender !== "") {
+                localStorage.setItem('wschat.sender', sender);
+                localStorage.setItem('wschat.roomId', roomId);
+                localStorage.setItem('wschat.userId', userId);
+                window.location.href = `/ChatRoomDetail.html`;
+            }
+            else
+            {
+                alert("대화명을 입력해야 합니다.");
+
+            }
+        }
+
+</script>
+</body>
+</html>
