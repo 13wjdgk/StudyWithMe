@@ -20,7 +20,8 @@ public class ChatRoomController {
     // 채팅 리스트 화면
     @GetMapping("/room")
     @ResponseBody
-    public ChatRoomResult rooms(@RequestParam String userId) {
+    public ChatRoomResult room(@RequestParam String userId) {
+
         return  chattingRoomService.findAllRoom(userId);
     }
 
@@ -35,6 +36,7 @@ public class ChatRoomController {
     @PostMapping("/room")
     @ResponseBody
     public ChatRoomResult createRoom(@RequestParam String name,@RequestParam String userId,@RequestParam Integer postId ) {
+        System.out.println(userId);
         return chattingRoomService.createChatRoom(name,userId,postId);
     }
 
