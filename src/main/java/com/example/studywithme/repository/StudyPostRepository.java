@@ -3,30 +3,17 @@ package com.example.studywithme.repository;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.example.studywithme.dto.StudyPostDTO;
-import com.example.studywithme.entity.Category;
+import com.example.studywithme.dto.StudyPostDto;
 import com.example.studywithme.entity.StudyPost;
-import com.example.studywithme.entity.User;
-import com.example.studywithme.enums.MeetType;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 
 public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 	default List<StudyPost> findAllSortedByLatest(int page, int size) {
@@ -39,11 +26,11 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 		return findAllBy(pageable).getContent();
 	}
 
-	default List<StudyPostDTO> findAllSortedByRecommend(int page, int size, String categoryId) {
+	default List<StudyPostDto> findAllSortedByRecommend(int page, int size, int categoryId) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "created_at"));
 		Page<Object[]> results = findAllByCategory(categoryId, pageable);
 		return results.stream()
-			.map(result -> new StudyPostDTO(
+			.map(result -> new StudyPostDto(
 				(Integer) result[0], // postId
 				(String) result[1],  // title
 				(String) result[2],  // description
@@ -53,7 +40,7 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 				(LocalDate) result[6], // deadline
 				(Integer) result[7],  // maxMembers
 				(Timestamp) result[8], // createdAt
-				(String) result[9],  // userId
+				(Integer) result[9],  // userId
 				(Boolean) result[10], // language
 				(Boolean) result[11], // certification
 				(Boolean) result[12], // major
@@ -84,7 +71,7 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 		+ "and ( s_c.language = c1.language or s_c.certification = c1.certification or s_c.major = c1.major or s_c.career = c1.career "
 		+ "or s_c.exam = c1.exam or s_c.hobbies = c1.hobbies or s_c.programming = c1.programming or s_c.self_directed = c1.self_directed "
 		+ "or s_c.etc = c1.etc or s_c.meet_type = c1.meet_type ) ",nativeQuery = true)
-	Page<Object[]> findAllByCategory(String categoryId, Pageable pageable);
+	Page<Object[]> findAllByCategory(int categoryId, Pageable pageable);
 
 
 }

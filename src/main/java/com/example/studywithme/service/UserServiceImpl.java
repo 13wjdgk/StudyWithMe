@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService , UserDetailsService{
             userDto.setPassword(passwordEncoder.encode(user.getPassword()));
 
             // category
-            String categoryId =  user.getCategory().getId();
+            int categoryId =  user.getCategory().getCategoryId();
             userDto.setCategory(categoryRepository.findById(categoryId).orElse(null));
         });
 
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService , UserDetailsService{
         userDto.setUserId(user.getUserId());
         userDto.setNickname(user.getNickname());
         userDto.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDto.setCategory(categoryRepository.findById(user.getCategory().getId()).orElse(null));
+        userDto.setCategory(categoryRepository.findById(user.getCategory().getCategoryId()).orElse(null));
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService , UserDetailsService{
             userDto.setNickname(user.getNickname());
             userDto.setPassword(passwordEncoder.encode(user.getPassword())); // -> 이게 맞아?
 //            userDto.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            userDto.setCategory(categoryRepository.findById(user.getCategory().getId()).orElse(null));
+            userDto.setCategory(categoryRepository.findById(user.getCategory().getCategoryId()).orElse(null));
         }
 
         return userDto;
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService , UserDetailsService{
         userDto.setNickname(user.getNickname());
         userDto.setPassword(passwordEncoder.encode(user.getPassword()));
         categoryRepository.save(user.getCategory());
-        userDto.setCategory(categoryRepository.findById(user.getCategory().getId()).orElse(null));
+        userDto.setCategory(categoryRepository.findById(user.getCategory().getCategoryId()).orElse(null));
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
