@@ -360,3 +360,4 @@ gradle-app.setting
 src/main/resources/application.properties
 .gradle/**
 .idea/**
+*.class

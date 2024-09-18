@@ -1,6 +1,6 @@
 package com.example.studywithme.service;
 
-import com.example.studywithme.dto.StudyPostDto;
+import com.example.studywithme.dto.StudyPostDTO;
 import com.example.studywithme.entity.Category;
 import com.example.studywithme.entity.StudyPost;
 import com.example.studywithme.entity.User;
@@ -29,7 +29,7 @@ public class StudyPostServiceImpl implements StudyPostService {
     }
 
     @Override
-    public StudyPostDto createStudyPost(StudyPostDto studyPostDto) {
+    public StudyPostDTO createStudyPost(StudyPostDTO studyPostDto) {
         // 1. 새로운 카테고리 생성 (항상 새로운 카테고리)
         Category category = new Category();
         category.setLanguage(studyPostDto.getLanguage());
@@ -67,7 +67,7 @@ public class StudyPostServiceImpl implements StudyPostService {
     }
 
     @Override
-    public StudyPostDto updateStudyPost(int postId, StudyPostDto studyPostDto) {
+    public StudyPostDTO updateStudyPost(int postId, StudyPostDTO studyPostDto) {
         StudyPost studyPost = studyPostRepository.findById(postId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid post ID: " + postId));
 
@@ -103,14 +103,14 @@ public class StudyPostServiceImpl implements StudyPostService {
     }
 
     @Override
-    public StudyPostDto getStudyPostById(int postId) {
+    public StudyPostDTO getStudyPostById(int postId) {
         StudyPost studyPost = studyPostRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + postId));
         return convertToDto(studyPost);
     }
 
-    private StudyPostDto convertToDto(StudyPost studyPost) {
-        return new StudyPostDto(
+    private StudyPostDTO convertToDto(StudyPost studyPost) {
+        return new StudyPostDTO(
                 studyPost.getPostId(),
                 studyPost.getTitle(),
                 studyPost.getDescription(),

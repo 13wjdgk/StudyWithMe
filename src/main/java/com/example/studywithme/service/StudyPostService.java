@@ -1,14 +1,14 @@
 package com.example.studywithme.service;
 
-import com.example.studywithme.dto.StudyPostDto;
+import com.example.studywithme.dto.StudyPostDTO;
 
 public interface StudyPostService {
 
-    StudyPostDto createStudyPost(StudyPostDto studyPostDto);
+    StudyPostDTO createStudyPost(StudyPostDTO studyPostDto);
 
-    StudyPostDto getStudyPostById(int postId);
+    StudyPostDTO getStudyPostById(int postId);
 
-    StudyPostDto updateStudyPost(int postId, StudyPostDto studyPostDto);
+    StudyPostDTO updateStudyPost(int postId, StudyPostDTO studyPostDto);
 
     void deleteStudyPost(int postId);
 }

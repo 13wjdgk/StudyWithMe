@@ -1,6 +1,6 @@
 package com.example.studywithme.controller;
 
-import com.example.studywithme.dto.StudyPostDto;
+import com.example.studywithme.dto.StudyPostDTO;
 import com.example.studywithme.service.StudyPostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +18,15 @@ public class StudyPostController {
 
     // 글 작성
     @PostMapping
-    public ResponseEntity<StudyPostDto> createStudyPost(@RequestBody StudyPostDto studyPostDto) {
-        StudyPostDto createdPost = studyPostService.createStudyPost(studyPostDto);
+    public ResponseEntity<StudyPostDTO> createStudyPost(@RequestBody StudyPostDTO studyPostDto) {
+        StudyPostDTO createdPost = studyPostService.createStudyPost(studyPostDto);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
     // 글 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<StudyPostDto> updateStudyPost(@PathVariable int postId, @RequestBody StudyPostDto studyPostDto) {
-        StudyPostDto updatedPost = studyPostService.updateStudyPost(postId, studyPostDto);
+    public ResponseEntity<StudyPostDTO> updateStudyPost(@PathVariable int postId, @RequestBody StudyPostDTO studyPostDto) {
+        StudyPostDTO updatedPost = studyPostService.updateStudyPost(postId, studyPostDto);
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
 
@@ -39,8 +39,8 @@ public class StudyPostController {
 
     // 글 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<StudyPostDto> getStudyPostById(@PathVariable int postId) {
-        StudyPostDto studyPostDto = studyPostService.getStudyPostById(postId);
+    public ResponseEntity<StudyPostDTO> getStudyPostById(@PathVariable int postId) {
+        StudyPostDTO studyPostDto = studyPostService.getStudyPostById(postId);
         return new ResponseEntity<>(studyPostDto, HttpStatus.OK);
     }
 }

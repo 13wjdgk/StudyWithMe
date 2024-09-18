@@ -12,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.example.studywithme.dto.StudyPostDto;
+import com.example.studywithme.dto.StudyPostDTO;
 import com.example.studywithme.entity.StudyPost;
 
 public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
@@ -26,11 +26,11 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 		return findAllBy(pageable).getContent();
 	}
 
-	default List<StudyPostDto> findAllSortedByRecommend(int page, int size, int categoryId) {
+	default List<StudyPostDTO> findAllSortedByRecommend(int page, int size, int categoryId) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "created_at"));
 		Page<Object[]> results = findAllByCategory(categoryId, pageable);
 		return results.stream()
-			.map(result -> new StudyPostDto(
+			.map(result -> new StudyPostDTO(
 				(Integer) result[0], // postId
 				(String) result[1],  // title
 				(String) result[2],  // description

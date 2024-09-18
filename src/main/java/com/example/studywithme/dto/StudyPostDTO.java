@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StudyPostDto {
+public class StudyPostDTO {
 
 	private Integer postId;
 	private String title;
@@ -35,7 +35,7 @@ public class StudyPostDto {
 	private MeetType meetType;
 
 	// Constructor
-	public StudyPostDto(Integer postId, String title, String description, String studyType, LocalDate studyDate,
+	public StudyPostDTO(Integer postId, String title, String description, String studyType, LocalDate studyDate,
 		LocalDate endDate, LocalDate deadline, Integer maxMembers, Timestamp createdAt, int categoryId,
 		Boolean language, Boolean certification, Boolean major, Boolean career, Boolean exam,
 		Boolean hobbies, Boolean programming, Boolean selfDirected, Boolean etc, String meetType) {
