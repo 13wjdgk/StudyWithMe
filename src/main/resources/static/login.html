@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인 페이지</title>
+<!--  <link rel="stylesheet" href="css/styles.css">&lt;!&ndash; &ndash;&gt;-->
+  <style>
+    /* 페이지 전체 레이아웃 */
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f8f9fa;
+      margin: 0;
+    }
+    /* 헤더 스타일 */
+    h1 {
+      color: #343a40;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* 중앙에 카드 형식으로 컨텐츠 배치 */
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .register-container {
+      width: 350px;
+    }
+
+    .login-container {
+      width: 300px;
+    }
+
+    /* 헤더 스타일 */
+    .container h1 {
+      color: #343a40;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .container hr {
+      margin-bottom: 20px;
+    }
+
+    /* 입력 필드 스타일 */
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #343a40;
+    }
+
+    .form-group input[type="text"], .form-group input[type="password"],
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    /* 사용자 이름 표시 영역 */
+    #name {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+
+    /* 버튼 및 링크 스타일 */
+    button, a.button-link {
+      background-color: #ffbf00;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 1rem;
+      margin-top: 10px;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover, a.button-link:hover {
+      background-color: #ffbf00;
+    }
+
+    button {
+      margin-bottom: 10px;
+    }
+
+    /* 링크를 블록 형태로 배치 */
+    .link-container {
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px; /* For consistent spacing */
+    }
+
+    .link-container a {
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    /* 로그인 컨테이너 특화 스타일 */
+    .login-container .form-group input[type="text"], .login-container .form-group input[type="password"]
+    {
+      /* Only styles specific to login container */
+      border: 1px solid #ccc;
+    }
+
+    .login-container button {
+      margin-top: 20px; /* Ensures correct spacing for login button */
+    }
+
+    /* 레지스터 컨테이너 특화 스타일 */
+    .register-container .form-group select {
+      /* Specific styles for select fields if needed */
+
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <h1>로그인</h1>
+  <hr>
+  <div class="form-group">
+    <label for="userId">아이디</label>
+    <input type="text" name="userId" id="userId" required>
+  </div>
+  <div class="form-group">
+    <label for="password">비밀번호</label>
+    <input type="text" name="password" id="password" required>
+  </div>
+  <button onclick="login()">로그인</button>
+  <div class="link-container">
+    <a href="/register.html" class="button-link">회원가입</a>
+    <a href="/index.html" class="button-link">서비스 둘러보기</a>
+  </div>
+</div>
+
+<script>
+
+  async function login() {
+    // 입력된 아이디와 비밀번호 가져오기
+    let user_id = document.getElementById("userId").value;
+    let password = document.getElementById("password").value;
+
+    // 서버 URL
+    let url = "/studywithme/login";
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/x-www-form-urlencoded'
+        },
+        body:
+          new URLSearchParams({
+            'user_id': user_id,
+            'password': password
+          })
+      });
+
+      let data = await response.json();
+
+      if (data.result === "success") {
+        if (data.userDto.userId != null) {
+          let userDto = data.userDto;
+
+          // 사용자 정보를 sessionStorage에 저장
+          sessionStorage.setItem("userDto", JSON.stringify(userDto));
+
+          // 사용자 이름 추출
+          let userName = userDto.nickname; // userDto에서 이름 대신 닉네임 사용
+          alert(`${userName} 님 환영합니다!`);
+          window.location.href = "/index.html"; // 로그인 성공 후, 메인 페이지로 이동
+        } else {
+          console.error("userDto 를 응답하지 못하였습니다.");
+          alert("서버 응답 데이터가 올바르지 않습니다.");
+        }
+      } else if (data.result === "fail") {
+        alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+      }
+    } catch (error) {
+      // console.error('로그인 요청 중 오류 발생:', error);
+      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+    }
+  }
+</script>
+</body>
+</html>
