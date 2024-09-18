@@ -358,3 +358,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers
 
 src/main/resources/application.properties
+.gradle/**
+.idea/**
