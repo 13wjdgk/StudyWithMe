@@ -1,7 +1,7 @@
 package com.example.studywithme.dto;
 
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import com.example.studywithme.enums.MeetType;
 
@@ -16,9 +16,9 @@ public class StudyPostDTO {
 	private String title;
 	private String description;
 	private String studyType;
-	private LocalDate studyDate;
-	private LocalDate endDate;
-	private LocalDate deadline;
+	private Date studyDate;
+	private Date endDate;
+	private Date deadline;
 	private Integer maxMembers;
 	private Timestamp createdAt;
 	private int categoryId;
@@ -33,10 +33,10 @@ public class StudyPostDTO {
 	private Boolean selfDirected;
 	private Boolean etc;
 	private MeetType meetType;
+	private int viewCount = 0;
 
-	// Constructor
-	public StudyPostDTO(Integer postId, String title, String description, String studyType, LocalDate studyDate,
-		LocalDate endDate, LocalDate deadline, Integer maxMembers, Timestamp createdAt, int categoryId,
+	public StudyPostDTO(Integer postId, String title, String description, String studyType, Date studyDate,
+		Date endDate, Date deadline, Integer maxMembers, Timestamp createdAt, int categoryId,
 		Boolean language, Boolean certification, Boolean major, Boolean career, Boolean exam,
 		Boolean hobbies, Boolean programming, Boolean selfDirected, Boolean etc, String meetType) {
 		this.postId = postId;
@@ -60,4 +60,32 @@ public class StudyPostDTO {
 		this.etc = etc;
 		this.meetType = MeetType.valueOf(meetType);
 	}
+	public StudyPostDTO(Integer postId, String title, String description, String studyType, Date studyDate,
+		Date endDate, Date deadline, Integer maxMembers, Timestamp createdAt, int categoryId,
+		Boolean language, Boolean certification, Boolean major, Boolean career, Boolean exam,
+		Boolean hobbies, Boolean programming, Boolean selfDirected, Boolean etc, String meetType , int viewCount) {
+		this.postId = postId;
+		this.title = title;
+		this.description = description;
+		this.studyType = studyType;
+		this.studyDate = studyDate;
+		this.endDate = endDate;
+		this.deadline = deadline;
+		this.maxMembers = maxMembers;
+		this.createdAt = createdAt;
+		this.categoryId = categoryId;
+		this.language = language;
+		this.certification = certification;
+		this.major = major;
+		this.career = career;
+		this.exam = exam;
+		this.hobbies = hobbies;
+		this.programming = programming;
+		this.selfDirected = selfDirected;
+		this.etc = etc;
+		this.meetType = MeetType.valueOf(meetType);
+		this.viewCount = viewCount;
+	}
+
+
 }

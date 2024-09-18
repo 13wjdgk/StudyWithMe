@@ -31,7 +31,7 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 				(Date) result[6], // deadline
 				(Integer) result[7],  // maxMembers
 				(Timestamp) result[8], // createdAt
-				(String) result[9],  // userId
+				(Integer) result[9],  // userId
 				(Boolean) result[10], // language
 				(Boolean) result[11], // certification
 				(Boolean) result[12], // major
@@ -60,7 +60,7 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 				(Date) result[6], // deadline
 				(Integer) result[7],  // maxMembers
 				(Timestamp) result[8], // createdAt
-				(String) result[9],  // userId
+				(Integer) result[9],  // userId
 				(Boolean) result[10], // language
 				(Boolean) result[11], // certification
 				(Boolean) result[12], // major
@@ -90,7 +90,7 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 				(Date) result[6], // deadline
 				(Integer) result[7],  // maxMembers
 				(Timestamp) result[8], // createdAt
-				(String) result[9],  // userId
+				(Integer) result[9],  // userId
 				(Boolean) result[10], // language
 				(Boolean) result[11], // certification
 				(Boolean) result[12], // major
@@ -119,7 +119,7 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 				(Date) result[6], // deadline
 				(Integer) result[7],  // maxMembers
 				(Timestamp) result[8], // createdAt
-				(String) result[9],  // userId
+				(Integer) result[9],  // userId
 				(Boolean) result[10], // language
 				(Boolean) result[11], // certification
 				(Boolean) result[12], // major
