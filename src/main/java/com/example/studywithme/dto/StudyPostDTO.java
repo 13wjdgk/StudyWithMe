@@ -2,7 +2,6 @@ package com.example.studywithme.dto;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import com.example.studywithme.enums.MeetType;
 

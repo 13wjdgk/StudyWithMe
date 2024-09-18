@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스터디 상세 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .info-section {
+            margin-bottom: 20px;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="title">스터디 상세 정보</h1>
+
+    <div class="info-section">
+        <h2>스터디 정보</h2>
+        <p><strong>스터디 유형:</strong> <span id="studyType"></span></p>
+        <p><strong>스터디 설명:</strong> <span id="description"></span></p>
+        <p><strong>스터디 날짜:</strong> <span id="studyDate"></span></p>
+        <p><strong>종료 날짜:</strong> <span id="endDate"></span></p>
+        <p><strong>모집 마감일:</strong> <span id="deadline"></span></p>
+        <p><strong>최대 인원:</strong> <span id="maxMembers"></span></p>
+    </div>
+
+    <div class="info-section">
+        <h2>카테고리 정보</h2>
+        <p><strong>대면/비대면:</strong> <span id="meetType"></span></p>
+    </div>
+
+    <div class="button-group">
+        <button onclick="window.location.href='/edit.html?postId=' + postId">수정</button>
+        <button onclick="deletePost()">삭제</button>
+    </div>
+</div>
+
+<script>
+    const postId = new URLSearchParams(window.location.search).get('postId');
+
+    // 스터디 정보를 가져와 화면에 표시하는 함수
+    fetch(`/api/study-posts/${postId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('스터디 정보를 가져오는 중 오류 발생');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('title').textContent = data.title;
+            document.getElementById('studyType').textContent = data.studyType;
+            document.getElementById('description').textContent = data.description;  // 설명 추가
+            document.getElementById('studyDate').textContent = new Date(data.studyDate).toLocaleDateString();
+            document.getElementById('endDate').textContent = new Date(data.endDate).toLocaleDateString();
+            document.getElementById('deadline').textContent = new Date(data.deadline).toLocaleDateString();
+            document.getElementById('maxMembers').textContent = data.maxMembers;
+            document.getElementById('meetType').textContent = data.meetType;
+        })
+        .catch(error => {
+            console.error('스터디 정보를 가져오는 중 오류 발생:', error);
+        });
+
+    // 글 삭제 함수
+    function deletePost() {
+        fetch(`/api/study-posts/${postId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('글 삭제 성공!');
+                    window.location.href = '/list.html';
+                } else {
+                    alert('글 삭제 실패');
+                }
+            })
+            .catch(error => {
+                console.error('글 삭제 중 오류 발생:', error);
+            });
+    }
+</script>
+
+</body>
+</html>
