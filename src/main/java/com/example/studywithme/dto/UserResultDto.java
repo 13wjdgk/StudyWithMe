@@ -8,5 +8,5 @@ import java.util.List;
 public class UserResultDto {
     private String result;
     private UserDto userDto;
-    private String categoryId;
+    private int categoryId;
 }
