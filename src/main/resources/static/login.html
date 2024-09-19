@@ -187,7 +187,7 @@
           // 사용자 이름 추출
           let userName = userDto.nickname; // userDto에서 이름 대신 닉네임 사용
           alert(`${userName} 님 환영합니다!`);
-          window.location.href = "/index.html"; // 로그인 성공 후, 메인 페이지로 이동
+          window.location.href = "/main.html"; // 로그인 성공 후, 메인 페이지로 이동
         } else {
           console.error("userDto 를 응답하지 못하였습니다.");
           alert("서버 응답 데이터가 올바르지 않습니다.");
