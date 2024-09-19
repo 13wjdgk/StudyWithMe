@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>WebSocket ChatRoom</title>
@@ -7,36 +7,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/dist/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         #app {
             display: none;
+            padding-bottom: 70px; /* 메시지 입력 영역 공간 확보 */
+        }
+
+        /* 내 메시지 스타일 (노란색) */
+        .my-message {
+            text-align: right;
+            background-color: #fff689; /* 밝은 노란색 배경 */
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid #fff689; /* 더 진한 노란색 테두리 */
+            display: inline-block;
+            max-width: 70%;
+            word-wrap: break-word; /* 길게 입력될 때 자동 줄바꿈 */
+        }
+
+        /* 다른 사람 메시지 스타일 (흰색) */
+        .other-message {
+            text-align: left;
+            background-color: #ffffff; /* 흰색 배경 */
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid #ddd; /* 회색 테두리 */
+            display: inline-block;
+            max-width: 70%;
+            word-wrap: break-word; /* 길게 입력될 때 자동 줄바꿈 */
+        }
+        .list-group-item {
+            margin-bottom: 10px;
+            display: inline-block;
+            max-width: 70%;
+        }
+
+        /* 입력 필드 고정 */
+        .input-container {
+            position: fixed;
+            bottom: 0;
+            width: 40%;
+            background-color: #fff8e1; /* 연한 노란색 배경 */
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            max-width: 100%;
+            flex-grow: 1;
+        }
+
+        .input-group-prepend .input-group-text {
+            background-color: #ffdd80; /* 버튼의 노란색 배경 */
+            border-color: #ffdd80;
+            color: #333;
+        }
+
+        .form-control {
+            border: 1px solid #ffdd80;
+        }
+
+        .btn-primary {
+            background-color: #ffc107; /* 버튼의 밝은 노란색 */
+            border-color: #ffc107;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffca28;
+            border-color: #ffca28;
+        }
+
+        /* 메시지 리스트 스크롤 */
+        .list-group {
+            overflow-y: auto;
+            max-height: calc(100vh - 140px); /* 입력창을 고려한 메시지 최대 높이 */
         }
     </style>
+
 </head>
 <body>
 <div class="container" id="app">
     <div>
         <h2 id="roomName"></h2>
     </div>
-    <div class="input-group">
-        <div class="input-group-prepend">
-            <label class="input-group-text">내용</label>
-        </div>
-        <input type="text" class="form-control" id="messageInput">
-        <div class="input-group-append">
-            <button class="btn btn-primary" type="button" id="sendButton">보내기</button>
+
+    <!-- 메시지 리스트 -->
+    <ul class="list-group" id="messages">
+        <!-- Messages will be dynamically inserted here -->
+    </ul>
+
+    <!-- 입력 필드 고정 -->
+    <div class="input-container">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text">내용</label>
+            </div>
+            <input type="text" class="form-control" id="messageInput">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="sendButton">보내기</button>
+            </div>
         </div>
     </div>
-    <ul class="list-group" id="messages">
-    </ul>
 </div>
 
 <!-- JavaScript -->
 <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 <script>
-
     window.onload = function () {
         findChatLog();
         findRoom();
@@ -54,12 +132,14 @@
     var sender = localStorage.getItem('wschat.sender');
     var userId = localStorage.getItem('wschat.userId');
     var sock = new SockJS("/ws-stomp");
+    var roomName= localStorage.getItem('wschat.rooname')
+    roomName = roomName.replace("_"," ");
     var ws = Stomp.over(sock);
     var reconnect = 0;
 
     async function findChatLog() {
         // userId를 쿼리 파라미터로 추가한 URL 생성
-        let url = `/chat/chatting?roomId=${encodeURIComponent(roomId)}`;
+        let url = `/chatting/chat_log/${roomId}`;
         try {
             let response = await fetch(url, {
                 method: 'GET',
@@ -69,6 +149,7 @@
 
             if (chattingLogList.result === 'success') {
                 console.log("채팅기록 불러오기 성공.");
+                displayChatLogs(chattingLogList);
             } else {
                 console.error("채팅기록 불러오기 중 오류가 발생했습니다.");
             }
@@ -79,17 +160,13 @@
     }
 
     function findRoom() {
-        fetch('/chat/room/' + roomId)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("roomName").innerHTML = data.name;
-            });
+        document.getElementById("roomName").innerHTML = roomName;
     }
 
     function sendMessage() {
         var messageInput = document.getElementById("messageInput");
         var message = messageInput.value;
-        ws.send("/pub/chat/message", {}, JSON.stringify({
+        ws.send("/pub/message", {}, JSON.stringify({
             type: 'TALK',
             roomId: roomId,
             sender: sender,
@@ -99,13 +176,13 @@
         messageInput.value = '';
     }
 
-    function recvMessage(recv) {
+   /* function recvMessage(recv) {
         var messagesList = document.getElementById("messages");
         var messageElement = document.createElement("li");
         messageElement.classList.add("list-group-item");
         messageElement.innerHTML = `${recv.sender} - ${recv.message}`;
         messagesList.insertBefore(messageElement, messagesList.firstChild);
-    }
+    }*/
 
     function connect() {
         ws.connect({}, function(frame) {
@@ -130,6 +207,64 @@
                 }, 10 * 1000);
             }
         });
+    }
+   /* function displayChatLogs(chatLogs) {
+        var messagesList = document.getElementById("messages");
+        messagesList.innerHTML = ''; // Clear existing messages
+        let data={chatLogs};
+        console.log(data)
+        chatLogs.chatDtoList.forEach(chat => {
+            var messageElement = document.createElement("li");
+            messageElement.classList.add("list-group-item");
+            messageElement.innerHTML = `${chat.sender} - ${chat.message} <small>${chat.sendtime}</small>`;
+            messagesList.appendChild(messageElement);
+        });
+    }*/
+    function displayChatLogs(chatLogs) {
+        var messagesList = document.getElementById("messages");
+        messagesList.innerHTML = ''; // Clear existing messages
+
+        chatLogs.chatDtoList.forEach(chat => {
+            var messageElement = document.createElement("li");
+
+            // 내가 보낸 메시지와 다른 사람이 보낸 메시지를 구분
+            if (chat.senderId === userId) {
+                messageElement.classList.add("list-group-item", "my-message");
+            } else {
+                messageElement.classList.add("list-group-item", "other-message");
+            }
+
+            // 메시지 내용과 시간을 출력
+            messageElement.innerHTML = `<b>${chat.sender}:</b> ${chat.message} <br><small>${chat.sendtime}</small>`;
+            messagesList.appendChild(messageElement);
+        });
+    }
+
+    function recvMessage(recv) {
+        var messagesList = document.getElementById("messages");
+        var messageElement = document.createElement("li");
+
+        // 내가 보낸 메시지와 다른 사람이 보낸 메시지를 구분
+        if (recv.senderId === userId) {
+            messageElement.classList.add("list-group-item", "my-message");
+        } else {
+            messageElement.classList.add("list-group-item", "other-message");
+        }
+
+        // 메시지 내용과 시간을 출력
+        messageElement.innerHTML = `<b>${recv.sender}:</b> ${recv.message}`;
+        messagesList.appendChild(messageElement, messagesList.firstChild);
+        messageElement.scrollIntoView({ behavior: "smooth" });
+        resizeMessageElement(messageElement);
+    }
+    function resizeMessageElement(messageElement) {
+        const messageContent = messageElement.querySelector('.list-group-item div');
+        if (messageContent) {
+            // 텍스트의 길이에 따라 너비 조정
+            messageContent.style.width = 'auto'; // 기본 너비 설정
+            const textWidth = messageContent.scrollWidth;
+            messageContent.style.width = `${Math.min(textWidth, 400)}px`; // 최대 너비를 400px로 제한
+        }
     }
 
 </script>

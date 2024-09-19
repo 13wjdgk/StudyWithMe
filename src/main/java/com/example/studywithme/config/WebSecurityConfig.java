@@ -45,11 +45,16 @@ public class WebSecurityConfig implements HandlerInterceptor {
                                 new AntPathRequestMatcher("/studywithme/users", "PUT"),
                                 new AntPathRequestMatcher("/index.html"),
                                 new AntPathRequestMatcher("/register.html"),
-                                new AntPathRequestMatcher("/mypage.html")
-
+                                new AntPathRequestMatcher("/mypage.html"),
+                                new AntPathRequestMatcher("/room.html"),
+                                new AntPathRequestMatcher("/ChatRoomDetail.html"),
+                                new AntPathRequestMatcher("/chat/room/**", "GET"),  // 채팅 리스트 화면
+                                new AntPathRequestMatcher("/chat/room", "POST")   , // 채팅방 생성
+                                new AntPathRequestMatcher("/chat/chatting", "GET"),
+                                new AntPathRequestMatcher("/room/{roomId}", "DELETE")  // 새로 추가된 DELETE 요청
 //                                new AntPathRequestMatcher("/static/register.html"),
 //                                new AntPathRequestMatcher("/mypage.html"),
-//                                new AntPathRequestMatcher("/static/login.html")
+                                //new AntPathRequestMatcher("/static/login.html")
 
                         ).permitAll()
                         .anyRequest().authenticated()
