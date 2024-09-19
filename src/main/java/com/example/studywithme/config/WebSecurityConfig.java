@@ -45,7 +45,9 @@ public class WebSecurityConfig implements HandlerInterceptor {
                                 new AntPathRequestMatcher("/studywithme/users", "PUT"),
                                 new AntPathRequestMatcher("/index.html"),
                                 new AntPathRequestMatcher("/register.html"),
-                                new AntPathRequestMatcher("/mypage.html")
+                                new AntPathRequestMatcher("/mypage.html"),
+                            new AntPathRequestMatcher("/main.html"),
+                            new AntPathRequestMatcher("/StudyList/**", "GET")
 
 //                                new AntPathRequestMatcher("/static/register.html"),
 //                                new AntPathRequestMatcher("/mypage.html"),
@@ -56,7 +58,7 @@ public class WebSecurityConfig implements HandlerInterceptor {
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login.html")
-                        .defaultSuccessUrl("/index.html", true)
+                        .defaultSuccessUrl("/main.html", true)
                         .permitAll()
                 )
                 .build();
