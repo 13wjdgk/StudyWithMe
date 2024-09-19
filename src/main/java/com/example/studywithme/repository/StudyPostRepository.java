@@ -136,7 +136,7 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 
 
 	@Query(value = "SELECT post.post_id, post.title, post.description, post.study_type, post.study_date, post.end_date, post.deadline, "
-		+ "post.max_members, post.created_at, post.user_id, c.language, c.certification, c.major, c.career, c.exam, c.hobbies, c.programming, c.self_directed, c.etc, c.meet_type "
+		+ "post.max_members, post.created_at, post.category_id, c.language, c.certification, c.major, c.career, c.exam, c.hobbies, c.programming, c.self_directed, c.etc, c.meet_type "
 		+ "FROM Study_Posts post "
 		+ "INNER JOIN Category c ON post.category_id = c.category_id  ",
 		countQuery = "SELECT count(*) FROM ( "
@@ -146,7 +146,7 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 			+ "INNER JOIN Category c ON post.category_id = c.category_id ) as sc ",		nativeQuery = true)
 	Page<Object[]> findAllBy(Pageable pageable);
 
-	@Query(value = "SELECT sc.post_id, sc.title, sc.description, sc.study_type, sc.study_date, sc.end_date, sc.deadline,sc.max_members, sc.created_at, sc.user_id, sc.language, sc.certification, sc.major, sc.career, sc.exam, sc.hobbies, sc.programming, sc.self_directed, sc.etc, sc.meet_type "
+	@Query(value = "SELECT sc.post_id, sc.title, sc.description, sc.study_type, sc.study_date, sc.end_date, sc.deadline,sc.max_members, sc.created_at, sc.category_id, sc.language, sc.certification, sc.major, sc.career, sc.exam, sc.hobbies, sc.programming, sc.self_directed, sc.etc, sc.meet_type "
 		+ "FROM ( SELECT post.post_id, post.title, post.description, post.study_type, post.study_date, post.end_date, post.deadline, post.max_members, post.created_at, post.user_id, c.category_id, c.language, c.certification, c.major, c.career, c.exam, c.hobbies, c.programming, c.self_directed, c.etc, c.meet_type "
 		+ "FROM Study_Posts post JOIN Category c ON post.category_id = c.category_id ) as sc "
 		+ ", Category c1  WHERE c1.category_id = :categoryId  and "
@@ -161,7 +161,7 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 		nativeQuery = true)
 	Page<Object[]> findAllByCategory(int categoryId, Pageable pageable);
 
-	@Query(value = " SELECT post.post_id, title, description, study_type, study_date, end_date, deadline,max_members, created_at, user_id, language, certification, major, career, exam, hobbies, programming, self_directed, etc, meet_type, vc.count "
+	@Query(value = " SELECT post.post_id, title, description, study_type, study_date, end_date, deadline,max_members, created_at, c.category_id, language, certification, major, career, exam, hobbies, programming, self_directed, etc, meet_type, vc.count "
 		+ "FROM Study_Posts post JOIN Category c ON post.category_id = c.category_id JOIN View_Count vc ON post.post_id=vc.post_id order by vc.count desc",
 		countQuery = "SELECT count(*) "
 			+ "FROM Study_Posts post JOIN Category c ON post.category_id = c.category_id JOIN View_Count vc ON post.post_id=vc.post_id",

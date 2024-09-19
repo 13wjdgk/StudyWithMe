@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Screen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff; /* 흰색 배경 */
+            color: #333; /* 기본 텍스트 색상 */
+        }
+        .header {
+            background-color: #FFF34F; /* 포인트 컬러 노란색 */
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid #FFF34F; /* 하단 강조 색상 */
+            position: relative;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .header .auth-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .header .auth-buttons a {
+            margin: 0 10px;
+            padding: 10px 20px;
+            color: #FFF34F; /* 포인트 컬러 노란색 */
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid #FFF34F; /* 포인트 컬러 노란색 테두리 */
+            border-radius: 5px;
+        }
+        .header .auth-buttons a:hover {
+            background-color: #E6E600; /* 포인트 컬러의 어두운 톤 */
+            color: #fff;
+        }
+        .container {
+            padding: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px 0;
+            color: #fff;
+            background-color: #FFF34F; /* 포인트 컬러 노란색 */
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .button:hover {
+            background-color: #E6E600; /* 포인트 컬러의 어두운 톤 */
+        }
+        .section {
+            background-color: #fff; /* 섹션 배경을 흰색으로 */
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+        }
+        .section h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        .footer {
+            background-color: #FFF34F; /* 포인트 컬러 노란색 */
+            color: #333;
+            padding: 10px;
+            text-align: center;
+            border-top: 5px solid #FFF34F; /* 상단 강조 색상 */
+        }
+        .container {
+            padding: 20px;
+        }
+        .card {
+            background-color: #fff; /* 카드 배경을 흰색으로 */
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 확대 */
+        }
+        .card h2 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .card p {
+            margin: 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>StudyWithMe</h1>
+    <div class="auth-buttons" id="auth-buttons">
+        <!-- 로그인 및 회원가입 버튼은 로그인 상태에 따라 동적으로 표시됩니다. -->
+        <a href="login.html" id="login-btn">로그인 및 회원가입 </a>
+        <a href="mypage.html" id="mypage-btn" style="display: none;">마이페이지</a>
+    </div>
+</div>
+<div class="sort-select">
+    <label for="sortOptions">정렬 기준 선택:</label>
+    <select id="sortOptions">
+        <option value="LATEST">최신순</option>
+        <option value="POPULAR">인기순</option>
+        <option value="OLDEST">오래된순</option>
+        <option value="RECOMMEND" id="recommendedOption">추천순</option>
+    </select>
+</div>
+<div class="container" id="cards-container">
+
+    <!-- API로부터 받은 데이터로 카드가 동적으로 추가됩니다. -->
+</div>
+<script>
+    const tagMap = {
+        career: "취업",
+        etc: "기타",
+        exam: "시험",
+        language: "언어",
+        major: "전공",
+        programming: "프로그래밍",
+        hobbies: "취미",
+        selfDirected: "자기계발"
+    };
+    window.onload = function() {
+        const loginBtn = document.getElementById('login-btn');
+        const mypageBtn = document.getElementById('mypage-btn');
+        const userDto = sessionStorage.getItem("userDto");
+        fetchAnnouncements();
+        if (userDto != null) {
+            // 로그인 상태일 경우 마이페이지 버튼을 보이게 하고, 다른 버튼들은 숨김
+            mypageBtn.style.display = 'inline-block';
+            loginBtn.style.display = 'none';
+        } else {
+            // 로그아웃 상태일 경우 로그인 및 회원가입 버튼을 보이게 함
+            mypageBtn.style.display = 'none';
+            loginBtn.style.display = 'inline-block';
+        }
+    };
+    fetchAnnouncements(sortOptions.value); // 초기 데이터 로드
+    sortOptions.addEventListener('change', function() {
+        fetchAnnouncements(this.value); // 정렬 기준이 변경될 때마다 데이터 로드
+    });
+    async function fetchAnnouncements(sortOption) {
+        try {
+            let url = '/StudyList/'+sortOption+'/0/10';
+            // if (sortOption!=RECOMMEND) {
+            //     url = `/StudyList/${sortOption}/0/10`;
+            // }
+            // post, parameter
+            let fetchOptions = {
+                method: "GET",
+            }
+            console.log(fetchOptions);
+
+            let response = await fetch(url, fetchOptions);
+            const data = await response.json();
+            console.log(response);
+            console.log(data);
+
+            // 카드 컨테이너 엘리먼트
+            const container = document.getElementById('cards-container');
+
+            // 기존 카드 목록 지우기
+            container.innerHTML = '';
+
+            // 카드 생성
+            await data.forEach(announcement => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                let tags = '';
+                for (const [key, value] of Object.entries(announcement)) {
+                    if (value === true) {
+                        tags += `<span>#${tagMap[key]}</span>`;
+                    }
+                }
+
+                // 카드 내용 추가
+                card.innerHTML = `
+                        <h2>${announcement.title}</h2>
+                        <p>${announcement.description}</p>
+                        <div class="tags">${tags}</div>
+                    `;
+
+                // 카드 컨테이너에 추가
+                container.appendChild(card);
+            });
+        } catch (error) {
+            console.error('Error fetching announcements:', error);
+        }
+    }
+        // 페이지 로드 시 카드 데이터를 가져옴
+        window.onload = fetchAnnouncements;
+</script>
+</body>
+</html>
