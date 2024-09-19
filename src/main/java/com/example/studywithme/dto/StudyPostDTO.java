@@ -34,6 +34,7 @@ public class StudyPostDTO {
 	private Boolean etc;
 	private MeetType meetType;
 	private int viewCount = 0;
+	private String currentUserId;
 
 	public StudyPostDTO(Integer postId, String title, String description, String studyType, Date studyDate,
 		Date endDate, Date deadline, Integer maxMembers, Timestamp createdAt, int categoryId,
