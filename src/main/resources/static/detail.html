@@ -33,6 +33,29 @@
             display: flex;
             justify-content: center;
             gap: 10px;
+            margin-top: 20px;
+        }
+        .button-group button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #editButton {
+            background-color: #5cb85c;
+            color: white;
+        }
+        #editButton:hover {
+            background-color: #4cae4c;
+        }
+        #deleteButton {
+            background-color: #d9534f;
+            color: white;
+        }
+        #deleteButton:hover {
+            background-color: #c9302c;
         }
     </style>
 </head>
@@ -56,9 +79,9 @@
         <p><strong>대면/비대면:</strong> <span id="meetType"></span></p>
     </div>
 
-    <div class="button-group">
-        <button onclick="window.location.href='/edit.html?postId=' + postId">수정</button>
-        <button onclick="deletePost()">삭제</button>
+    <div class="button-group" id="buttonGroup">
+        <button id="editButton" onclick="window.location.href='/edit.html?postId=' + postId">수정</button>
+        <button id="deleteButton" onclick="deletePost()">삭제</button>
     </div>
 </div>
 
@@ -76,7 +99,7 @@
         .then(data => {
             document.getElementById('title').textContent = data.title;
             document.getElementById('studyType').textContent = data.studyType;
-            document.getElementById('description').textContent = data.description;  // 설명 추가
+            document.getElementById('description').textContent = data.description;
             document.getElementById('studyDate').textContent = new Date(data.studyDate).toLocaleDateString();
             document.getElementById('endDate').textContent = new Date(data.endDate).toLocaleDateString();
             document.getElementById('deadline').textContent = new Date(data.deadline).toLocaleDateString();

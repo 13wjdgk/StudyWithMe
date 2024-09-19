@@ -43,11 +43,20 @@ public class WebSecurityConfig implements HandlerInterceptor {
                                 new AntPathRequestMatcher("/studywithme/users", "GET"),
                                 new AntPathRequestMatcher("/studywithme/users", "POST"),
                                 new AntPathRequestMatcher("/studywithme/users", "PUT"),
+                                new AntPathRequestMatcher("/api/study-posts", "POST"),
+                                new AntPathRequestMatcher("/api/study-posts/{postId}", "PUT"),
+                                new AntPathRequestMatcher("/api/study-posts/{postId}", "DELETE"),
+                                new AntPathRequestMatcher("/api/study-posts/{postId}", "GET"),
                                 new AntPathRequestMatcher("/index.html"),
+                                new AntPathRequestMatcher("/register.html"),
+                                new AntPathRequestMatcher("/write.html"),
+                                new AntPathRequestMatcher("/detail.html"),
+                                new AntPathRequestMatcher("/edit.html"),
                                 new AntPathRequestMatcher("/register.html"),
                                 new AntPathRequestMatcher("/mypage.html"),
                             new AntPathRequestMatcher("/main.html"),
                             new AntPathRequestMatcher("/StudyList/**", "GET")
+
 
 //                                new AntPathRequestMatcher("/static/register.html"),
 //                                new AntPathRequestMatcher("/mypage.html"),
