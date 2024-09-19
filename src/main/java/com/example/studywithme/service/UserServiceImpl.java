@@ -6,18 +6,11 @@ import com.example.studywithme.repository.CategoryRepository;
 import com.example.studywithme.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -33,6 +26,22 @@ public class UserServiceImpl implements UserService , UserDetailsService{
         // user
         UserDto userDto = new UserDto();
         userRepository.findById(id).ifPresent(user -> {
+            userDto.setUserId(user.getUserId());
+            userDto.setNickname(user.getNickname());
+            userDto.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            // category
+            int categoryId =  user.getCategory().getCategoryId();
+            userDto.setCategory(categoryRepository.findById(categoryId).orElse(null));
+        });
+
+        return userDto;
+    }
+
+    @Override
+    public UserDto detailUser(String id, String nickname) {
+        UserDto userDto = new UserDto();
+        userRepository.findByUserIdAndNickname(id, nickname).ifPresent(user -> {
             userDto.setUserId(user.getUserId());
             userDto.setNickname(user.getNickname());
             userDto.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -70,8 +79,7 @@ public class UserServiceImpl implements UserService , UserDetailsService{
         if(user != null &&  passwordEncoder.matches(password, user.getPassword()) ) {
             userDto.setUserId(user.getUserId());
             userDto.setNickname(user.getNickname());
-            userDto.setPassword(passwordEncoder.encode(user.getPassword())); // -> 이게 맞아?
-//            userDto.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            userDto.setPassword(passwordEncoder.encode(user.getPassword()));
             userDto.setCategory(categoryRepository.findById(user.getCategory().getCategoryId()).orElse(null));
         }
 
@@ -94,16 +102,6 @@ public class UserServiceImpl implements UserService , UserDetailsService{
         return userDto;
     }
 
-//    public InMemoryUserDetailsManager userDetailsService(String userId) {
-//        User user = userRepository.findById(userId).orElse(null);
-//        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-//                .username(user.getUserId())
-//                .password(user.getPassword())
-//                .roles("USER")
-//                .build();
-//        return new InMemoryUserDetailsManager(userDetails);
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         User user = userRepository.findById(userId).orElse(null);
@@ -114,8 +112,4 @@ public class UserServiceImpl implements UserService , UserDetailsService{
                 .build();
     }
 
-//    @Override
-//    public User loadUserByUsername(String userId) {
-//        return userRepository.findById(userId).orElse(null);
-//    }
 }

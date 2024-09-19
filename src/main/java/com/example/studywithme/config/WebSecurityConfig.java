@@ -26,31 +26,21 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 public class WebSecurityConfig implements HandlerInterceptor {
 
-//    @Bean
-//    public WebSecurityCustomizer configure(){
-//        return (web) -> web.ignoring()
-//                .requestMatchers(new AntPathRequestMatcher("/static/**"));
-//    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(auth -> auth
                         .requestMatchers(
-//                                "/users/{id}"
                                 new AntPathRequestMatcher("/studywithme/login", "POST"),
                                 new AntPathRequestMatcher("/studywithme/users", "GET"),
                                 new AntPathRequestMatcher("/studywithme/users", "POST"),
                                 new AntPathRequestMatcher("/studywithme/users", "PUT"),
+                                new AntPathRequestMatcher("/studywithme/userDetail", "POST"),
                                 new AntPathRequestMatcher("/index.html"),
                                 new AntPathRequestMatcher("/register.html"),
-                                new AntPathRequestMatcher("/mypage.html")
-
-//                                new AntPathRequestMatcher("/static/register.html"),
-//                                new AntPathRequestMatcher("/mypage.html"),
-//                                new AntPathRequestMatcher("/static/login.html")
-
+                                new AntPathRequestMatcher("/mypage.html"),
+                                new AntPathRequestMatcher("/getNewPassword.html")
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -62,32 +52,9 @@ public class WebSecurityConfig implements HandlerInterceptor {
                 .build();
     }
 
-//    @Bean
-//    public AuthenticationManager authenticationManager(HttpSecurity http,
-//        BCryptPasswordEncoder bCryptPasswordEncoder, UserService_구 userService)
-//            throws Exception {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(userService);
-//        authProvider.setPasswordEncoder(bCryptPasswordEncoder);
-//        return new ProviderManager(authProvider);
-//    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-//    @Override
-//    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//
-//        System.out.println("preHandle");
-//        HttpSession session = request.getSession();
-//        UserDto userDto = (UserDto) session.getAttribute("userDto");
-//
-//        if (userDto == null) {
-//            System.out.println("userDto is null");
-//            response.sendRedirect("/login.html");
-//        }
-//        return true;
-//    }
 }
