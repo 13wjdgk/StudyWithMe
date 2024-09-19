@@ -27,6 +27,7 @@ public class ChatService {
         Optional <ChattingRoom> optionalChattingRoom=chattingRoomRepository.findById(chatDto.getRoomId());
         chat.setMessage(chatDto.getMessage());
         chat.setSendTime(chatDto.getSendtime());
+        System.out.println("챗삽입");
         if(optionalChattingRoom.isPresent())
         {
             chat.setChatRoom(optionalChattingRoom.get());
@@ -65,7 +66,7 @@ public class ChatService {
         });
         chatLogResult.setResult("success");
         chatLogResult.setChatDtoList(chatDtos);
-        System.out.println(chatDtos);
+        System.out.println(chatLogResult);
         return chatLogResult;
     }
 }

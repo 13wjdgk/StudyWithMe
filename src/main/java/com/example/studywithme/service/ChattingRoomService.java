@@ -24,6 +24,7 @@ public class ChattingRoomService {
 
     public ChatRoomResult findAllRoom(String userId) {
         List<ChatRoomDto> chatRoomDto = new ArrayList<>();
+        System.out.println("oo");
         List<ChattingRoom> chatRooms= chattingParticipantRepository.findChatRoomsByUserId(userId);
         ChatRoomResult chatRoomResult = new ChatRoomResult();
         chatRooms.forEach(room -> {
@@ -82,4 +83,26 @@ public class ChattingRoomService {
         }
         return chatRoomResult;
     }
+    public ChatRoomResult deleteChatRoom(Integer roomId) {
+        ChatRoomResult chatRoomResult = new ChatRoomResult();
+        try {
+             chattingRoomRepository.deleteById(roomId);
+            System.out.println("삭제");
+            chatRoomResult.setResult("success");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            chatRoomResult.setResult("fail");
+        }
+
+        return chatRoomResult;
+    }
+    /*public int ChattingRoomCount(Integer roomId)
+    {
+        return chattingParticipantRepository.countParticipantsByChatRoomId(roomId);
+    }
+    public ChatRoomResult ChattingRoomCount(String userId)
+    {
+        return chattingParticipantRepository.countParticipantsByChatRoomId(roomId);
+    }*/
 }

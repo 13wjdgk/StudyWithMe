@@ -9,16 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 
 @RequiredArgsConstructor
-@Controller
-@RequestMapping("/chat")
+@RestController
+@RequestMapping("/chatting")
 public class ChatController {
 
     private final SimpMessageSendingOperations messagingTemplate;
@@ -30,10 +27,10 @@ public class ChatController {
         messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
         message.setSendtime(new Timestamp(System.currentTimeMillis()));
         chatService.ChatInsert(message,message.getSenderId());
-
+        System.out.println("d컨트롤러");
     }
-    @GetMapping("/chatting")
-    public ChatLogResult ChttingLog(@RequestParam  Integer roomId)
+    @GetMapping("/chat_log/{roomId}")
+    public ChatLogResult ChttingLog(@PathVariable  int roomId)
     {
         return chatService.ChattingLog(roomId);
     }

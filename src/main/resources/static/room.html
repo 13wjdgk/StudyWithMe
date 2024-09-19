@@ -53,6 +53,7 @@
                 <th>Study Type</th>
                 <th>Study Date</th>
                 <th>Action</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody id="RoomListTable">
@@ -66,25 +67,27 @@
     window.onload = function () {
         findUserRoom();
         document.querySelector("#createRoomButton").onclick=createRoom;
-        document.querySelector("#enterRoom").onclick=enterRoom;
+        //document.querySelector("#enterRoom").onclick=enterRoom;
     }
     //const app = document.getElementById("app");
     //const roomNameInput = document.getElementById("roomNameInput");
     //const createRoomButton = document.getElementById("createRoomButton");
     //const chatRoomList = document.getElementById("chatRoomList");*/
+
         async function findUserRoom() {
-            let userId = 'user001';
-            // userId를 쿼리 파라미터로 추가한 URL 생성
-            let url = `/chat/room?userId=${encodeURIComponent(userId)}`;
+
+            const storedData = sessionStorage.getItem('userDto');
+            const parsedData = JSON.parse(storedData);
+            userId = parsedData.userId;
+
+            let url = `/chat/room/${userId}`;
+
             try {
-                //하드 코딩 나중에 고쳐야함
                 let response = await fetch(url, {
                     method: 'GET',
                 });
                 let chatroomlist = await response.json();
                 console.log(chatroomlist);
-
-                // 결과가 'success'인지 확인
                 if (chatroomlist.result === 'success') {
                     let tableBody = document.querySelector('#RoomListTable');
                     tableBody.innerHTML = ''; // 기존 데이터 지우기
@@ -92,6 +95,7 @@
                     // chatRoomDtos 배열을 처리
                     chatroomlist.chatRoomDtos.forEach(room => {
                         let row = document.createElement('tr');
+                        let roomName = room.name.replace(/ /g, "_");
                         row.innerHTML = `
                             <td>${room.roomId}</td>
                             <td>${room.name}</td>
@@ -100,16 +104,17 @@
                             <td>${room.recruitmentPost.description}</td>
                             <td>${room.recruitmentPost.studyType}</td>
                             <td>${room.recruitmentPost.studyDate}</td>
-                            <td><button class="btn btn-primary" onclick="enterRoom(${room.roomId},'user001')">입장</button></td>
+                            <td><button class="btn btn-primary" onclick="enterRoom(${room.roomId},userId,'${roomName}')">입장</button></td>
+                            <td>  <button class="btn btn-danger" onclick="deleteRoom(${room.roomId})">퇴장</button></td>
                         `;
                         tableBody.appendChild(row);
                     });
                 } else {
                     console.error("Failed to retrieve chat rooms.");
                 }
-            }catch (eroor) {
+            }catch  {
                 alert("채팅방 조회 과정 중 오류가 발생했습니다.");
-                console.log(error);
+
             }
 
         }
@@ -135,23 +140,44 @@
             console.log(chatroomlist)
             findUserRoom();
         }
-        function enterRoom(roomId,userId) {
+        function enterRoom(roomId,userId,rooname) {
           //  const roomId = button.getAttribute('roomId');
            // const userId = button.getAttribute('data-user-id');
-            const sender = prompt('대화명을 입력해 주세요.');
-            if (sender !== "") {
-                localStorage.setItem('wschat.sender', sender);
+            //const sender = prompt('대화명을 입력해 주세요.');
+           // if (sender !== "") {
+                const storedData = sessionStorage.getItem('userDto');
+                const parsedData = JSON.parse(storedData);
+                nickname = parsedData.nickname;
+                localStorage.setItem('wschat.sender', nickname);
                 localStorage.setItem('wschat.roomId', roomId);
                 localStorage.setItem('wschat.userId', userId);
-                window.location.href = `/ChatRoomDetail.html`;
-            }
-            else
-            {
-                alert("대화명을 입력해야 합니다.");
+                localStorage.setItem('wschat.rooname', rooname);
+                window.location.href = "/ChatRoomDetail.html";
 
-            }
         }
-
+    function deleteRoom(roomId) {
+        // 서버에 삭제 요청을 보냅니다.
+        //let url = `/chat/room/${userId}`;
+        fetch(`chat/room/${roomId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                console.log(response);
+                if (response.ok) {
+                    // 삭제가 성공하면 해당 행을 제거합니다.
+                    const row = document.querySelector(`tr[data-room-id="${roomId}"]`);
+                    if (row) {
+                        row.remove();
+                    }
+                } else {
+                    alert('삭제 실패');
+                }
+            })
+            .catch(error => {
+                console.error('삭제 중 오류 발생:', error);
+                alert('삭제 중 오류 발생');
+            });
+    }
 </script>
 </body>
 </html>

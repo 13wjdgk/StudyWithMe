@@ -111,6 +111,7 @@
   <a href="/register.html" class="button-link">회원가입</a>
   <hr>
   <button type="button" id="mypage-btn">마이페이지</button>
+  <a type="button" id="chatroom-btn">채팅방</a>
   <button id="logout-btn">로그아웃</button>
 
   <script>
@@ -126,6 +127,17 @@
               window.location.href = "/login.html";
           } else {
               window.location.href = "/mypage.html";
+          }
+      });
+
+      document.getElementById("chatroom-btn").addEventListener("click", function () {
+          const userDto = sessionStorage.getItem("userDto");
+          console.log("d");
+          if (userDto == null){
+              alert("로그인 후에 이용 바랍니다");
+              //window.location.href = "/login.html";
+          } else {
+              window.location.href = "/room.html";
           }
       });
 

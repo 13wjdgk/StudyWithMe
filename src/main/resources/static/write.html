@@ -159,6 +159,7 @@
             body: JSON.stringify(formData),
         })
             .then(response => {
+                console.log(response)
                 if (response.ok) {
                     alert('글 작성 성공!');
                     window.location.href = '/list.html';  // 글 작성 후 목록 페이지로 이동
