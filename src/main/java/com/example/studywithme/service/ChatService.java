@@ -55,6 +55,7 @@ public class ChatService {
         ChatLogResult chatLogResult = new ChatLogResult();
         List<Chatting> chat =chattingRepository.findByChatRoom_ChatroomId(roomId);
         List<ChatDto>chatDtos= new ArrayList<>();
+        System.out.println(chat);
         chat.forEach(chatting -> {
             ChatDto chatDto = new ChatDto();
             chatDto.setSendtime(chatting.getSendTime());

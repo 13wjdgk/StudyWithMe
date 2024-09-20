@@ -11,6 +11,7 @@ import java.util.UUID;
 public class ChatRoomDto {
     private int roomId;
     private String name;
+    private String OriginUserId;
     private StudyPost recruitmentPost;
 
     public static ChatRoomDto create(String name) {

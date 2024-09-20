@@ -29,6 +29,7 @@ public class ChatController {
         chatService.ChatInsert(message,message.getSenderId());
         System.out.println("d컨트롤러");
     }
+
     @GetMapping("/chat_log/{roomId}")
     public ChatLogResult ChttingLog(@PathVariable  int roomId)
     {

@@ -1,7 +1,6 @@
 package com.example.studywithme.service;
 
-import com.example.studywithme.dto.ChatRoomDto;
-import com.example.studywithme.dto.ChatRoomResult;
+import com.example.studywithme.dto.*;
 import com.example.studywithme.entity.ChattingParticipant;
 import com.example.studywithme.entity.ChattingRoom;
 import com.example.studywithme.entity.StudyPost;
@@ -10,6 +9,7 @@ import com.example.studywithme.repository.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -21,6 +21,7 @@ public class ChattingRoomService {
     private final ChattingRoomRepository chattingRoomRepository;
     private final UsersRepository usersRepository;
     private final StudyPostRepository studyPostRepository;
+    private final StudyPostService studyPostService;
 
     public ChatRoomResult findAllRoom(String userId) {
         List<ChatRoomDto> chatRoomDto = new ArrayList<>();
@@ -38,7 +39,7 @@ public class ChattingRoomService {
         chatRoomResult.setChatRoomDtos(chatRoomDto);
         return chatRoomResult;
     }
-    public ChatRoomResult createChatRoom(String name,String userid,Integer post_id){
+    public ChatRoomResult createChatRoom(String userid,Integer post_id){
         ChatRoomResult chatRoomResult = new ChatRoomResult();
         try
         {
@@ -54,7 +55,6 @@ public class ChattingRoomService {
                 return chatRoomResult;
             }
             ChattingRoom chattingRoom=new ChattingRoom();
-            chattingRoom.setName(name);
             chattingRoom.setRecruitmentPost(studyPost);
             chattingRoom.setCreatedDate(new Timestamp(System.currentTimeMillis()));
             chattingRoom =chattingRoomRepository.save(chattingRoom);
@@ -74,7 +74,18 @@ public class ChattingRoomService {
                 return chatRoomResult;
             }
             chattingParticipant.setUser(user);
+            User user2=new User();
+            user2.setUserId(studyPost.getUser().getUserId());
+            chattingParticipant.setUser(user2);
             chattingParticipantRepository.save(chattingParticipant);
+            ChatRoomDto nChatDto=new ChatRoomDto();
+            nChatDto.setRoomId(chattingRoom.getChatroomId());
+            nChatDto.setOriginUserId(studyPost.getUser().getUserId());
+            List<ChatRoomDto> chatDtoList=new ArrayList<>();
+            chatDtoList.add(nChatDto);
+            chatRoomResult.setChatRoomDtos(chatDtoList);
+
+
             chatRoomResult.setResult("success");
         }catch (Exception e)
         {
@@ -83,10 +94,11 @@ public class ChattingRoomService {
         }
         return chatRoomResult;
     }
-    public ChatRoomResult deleteChatRoom(Integer roomId) {
+    @Transactional
+    public ChatRoomResult deleteChatRoom(String userId,int roomId) {
         ChatRoomResult chatRoomResult = new ChatRoomResult();
         try {
-             chattingRoomRepository.deleteById(roomId);
+            chattingParticipantRepository.deleteByChatRoomIdAndUserId(userId,roomId);
             System.out.println("삭제");
             chatRoomResult.setResult("success");
         } catch (Exception e)
@@ -97,12 +109,5 @@ public class ChattingRoomService {
 
         return chatRoomResult;
     }
-    /*public int ChattingRoomCount(Integer roomId)
-    {
-        return chattingParticipantRepository.countParticipantsByChatRoomId(roomId);
-    }
-    public ChatRoomResult ChattingRoomCount(String userId)
-    {
-        return chattingParticipantRepository.countParticipantsByChatRoomId(roomId);
-    }*/
+
 }
