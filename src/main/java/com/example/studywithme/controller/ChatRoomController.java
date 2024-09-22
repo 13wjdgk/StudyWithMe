@@ -26,23 +26,18 @@ public class ChatRoomController {
     }
 
     // 채팅방 생성
-    @PostMapping("/room")
+    @PostMapping("/room/{userId}/{postId}")
     @ResponseBody
-    public ChatRoomResult createRoom(@RequestParam String name,@RequestParam String userId,@RequestParam Integer postId ) {
-        return chattingRoomService.createChatRoom(name,userId,postId);
+    public ChatRoomResult createRoom(@PathVariable String userId,@PathVariable int postId) {
+        return chattingRoomService.createChatRoom(userId,postId);
     }
 
-    //@DeleteMapping("/room/{roomId}")
-    //@ResponseBody
-    /*public ChatRoomResult deleteRoom(@PathVariable Integer roomId ) {
+    @DeleteMapping("/room/{userId}/{roomId}")
+    @ResponseBody
+    public ChatRoomResult deleteRoom(@PathVariable String userId ,@PathVariable int roomId) {
 
-            if(chattingRoomService.ChattingRoomCount(roomId)>1)
-            {//한명이상 있으면 나혼자만 나가는걸로
-                return
-            }
-            else
-                return chattingRoomService.deleteChatRoom(roomId);
-    }*/
+        return chattingRoomService.deleteChatRoom(userId,roomId);
+    }
 
 
     // 특정 채팅방 조회

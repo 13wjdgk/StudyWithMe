@@ -8,7 +8,7 @@ import com.example.studywithme.enums.MeetType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+//dto
 @Getter
 @Setter
 @NoArgsConstructor
