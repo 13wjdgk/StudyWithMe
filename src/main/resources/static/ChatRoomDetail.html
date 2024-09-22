@@ -132,13 +132,14 @@
     var sender = localStorage.getItem('wschat.sender');
     var userId = localStorage.getItem('wschat.userId');
     var sock = new SockJS("/ws-stomp");
-    var roomName= localStorage.getItem('wschat.rooname')
-    roomName = roomName.replace("_"," ");
+   // var roomName= localStorage.getItem('wschat.title')
+   // roomName = roomName.replace("_"," ");
     var ws = Stomp.over(sock);
     var reconnect = 0;
 
     async function findChatLog() {
         // userId를 쿼리 파라미터로 추가한 URL 생성
+        console.log(roomId);
         let url = `/chatting/chat_log/${roomId}`;
         try {
             let response = await fetch(url, {
@@ -159,8 +160,9 @@
         }
     }
 
-    function findRoom() {
-        document.getElementById("roomName").innerHTML = roomName;
+   function findRoom() {
+        let ChatRoomName="채팅방"
+        document.getElementById("roomName").innerHTML = ChatRoomName;
     }
 
     function sendMessage() {

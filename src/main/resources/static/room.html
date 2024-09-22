@@ -32,21 +32,13 @@
 <div class="container">
     <h1 class="my-4 text-center">Chat Room Management</h1>
 
-    <div class="mb-4">
-        <div class="form-group">
-            <label for="roomNameInput">채팅방 제목:</label>
-            <input type="text" id="roomNameInput" class="form-control" placeholder="방 제목을 입력하세요">
-        </div>
-        <button id="createRoomButton" class="btn btn-primary">채팅방 개설</button>
-    </div>
 
 
     <div>
         <table id="chatroom-table" class="table table-bordered table-striped">
             <thead class="thead-light">
             <tr>
-                <th>Room ID</th>
-                <th>Name</th>
+                <th>RoomID</th>
                 <th>Post ID</th>
                 <th>Post Title</th>
                 <th>Description</th>
@@ -63,10 +55,12 @@
     </div>
 </div>
 <!-- JavaScript -->
+<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 <script>
     window.onload = function () {
         findUserRoom();
-        document.querySelector("#createRoomButton").onclick=createRoom;
+        //document.querySelector("#createRoomButton").onclick=createRoom;
         //document.querySelector("#enterRoom").onclick=enterRoom;
     }
     //const app = document.getElementById("app");
@@ -95,17 +89,16 @@
                     // chatRoomDtos 배열을 처리
                     chatroomlist.chatRoomDtos.forEach(room => {
                         let row = document.createElement('tr');
-                        let roomName = room.name.replace(/ /g, "_");
+                        row.setAttribute('data-room-id', room.roomId); //
                         row.innerHTML = `
                             <td>${room.roomId}</td>
-                            <td>${room.name}</td>
                             <td>${room.recruitmentPost.postId}</td>
                             <td>${room.recruitmentPost.title}</td>
                             <td>${room.recruitmentPost.description}</td>
                             <td>${room.recruitmentPost.studyType}</td>
                             <td>${room.recruitmentPost.studyDate}</td>
-                            <td><button class="btn btn-primary" onclick="enterRoom(${room.roomId},userId,'${roomName}')">입장</button></td>
-                            <td>  <button class="btn btn-danger" onclick="deleteRoom(${room.roomId})">퇴장</button></td>
+                            <td><button class="btn btn-primary" onclick="enterRoom(${room.roomId},userId)">입장</button></td>
+                            <td>  <button class="btn btn-danger" onclick="deleteRoom(userId,${room.roomId})">퇴장</button></td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -140,7 +133,7 @@
             console.log(chatroomlist)
             findUserRoom();
         }
-        function enterRoom(roomId,userId,rooname) {
+        function enterRoom(roomId,userId) {
           //  const roomId = button.getAttribute('roomId');
            // const userId = button.getAttribute('data-user-id');
             //const sender = prompt('대화명을 입력해 주세요.');
@@ -151,23 +144,21 @@
                 localStorage.setItem('wschat.sender', nickname);
                 localStorage.setItem('wschat.roomId', roomId);
                 localStorage.setItem('wschat.userId', userId);
-                localStorage.setItem('wschat.rooname', rooname);
                 window.location.href = "/ChatRoomDetail.html";
 
         }
-    function deleteRoom(roomId) {
-        // 서버에 삭제 요청을 보냅니다.
-        //let url = `/chat/room/${userId}`;
-        fetch(`chat/room/${roomId}`, {
+    async function deleteRoom(userId,roomId) {
+        fetch(`/chat/room/${userId}/${roomId}`, {
             method: 'DELETE',
         })
             .then(response => {
                 console.log(response);
                 if (response.ok) {
-                    // 삭제가 성공하면 해당 행을 제거합니다.
-                    const row = document.querySelector(`tr[data-room-id="${roomId}"]`);
+                    const row = document.querySelector(`tr[data-room-id='${roomId}']`);
+                    console.log(row);
                     if (row) {
-                        row.remove();
+                        row.remove(); // 해당 행 삭제
+                        alert('채팅방에서 퇴장 했습니다');
                     }
                 } else {
                     alert('삭제 실패');

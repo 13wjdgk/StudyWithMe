@@ -82,12 +82,13 @@
     <div class="button-group" id="buttonGroup">
         <button id="editButton" onclick="window.location.href='/edit.html?postId=' + postId">수정</button>
         <button id="deleteButton" onclick="deletePost()">삭제</button>
+        <button id="CreateChattingRoomButton" onclick="CreateChattingRoom()">문의하기</button>
     </div>
 </div>
 
 <script>
     const postId = new URLSearchParams(window.location.search).get('postId');
-
+    let roomTitel;
     // 스터디 정보를 가져와 화면에 표시하는 함수
     fetch(`/api/study-posts/${postId}`)
         .then(response => {
@@ -97,6 +98,7 @@
             return response.json();
         })
         .then(data => {
+            console.log(data);
             document.getElementById('title').textContent = data.title;
             document.getElementById('studyType').textContent = data.studyType;
             document.getElementById('description').textContent = data.description;
@@ -105,6 +107,7 @@
             document.getElementById('deadline').textContent = new Date(data.deadline).toLocaleDateString();
             document.getElementById('maxMembers').textContent = data.maxMembers;
             document.getElementById('meetType').textContent = data.meetType;
+            roomTitel=data.title;
         })
         .catch(error => {
             console.error('스터디 정보를 가져오는 중 오류 발생:', error);
@@ -126,6 +129,42 @@
             .catch(error => {
                 console.error('글 삭제 중 오류 발생:', error);
             });
+    }
+     async function CreateChattingRoom() {
+        if (sessionStorage.getItem("userDto"))
+        {
+            console.log("들어옴");
+
+            const storedData = sessionStorage.getItem('userDto');
+            const parsedData = JSON.parse(storedData);
+            nickname = parsedData.nickname;
+            userId=parsedData.userId;
+            let url = `/chat/room/${userId}/${postId}`;
+
+            try {
+                let response = await fetch(url, {
+                    method: 'POST',
+                });
+                let room=await response.json();
+
+                console.log(room);
+                let roomId=room.chatRoomDtos[0].roomId;
+                console.log(roomId);
+                localStorage.setItem('wschat.sender', nickname);
+                localStorage.setItem('wschat.userId', userId);
+                localStorage.setItem('wschat.roomId', roomId);
+                window.location.href = "/ChatRoomDetail.html";
+            }catch {
+                alert("문의하기에 실패했습니다.")
+            }
+
+
+        }
+        else
+        {
+            alert("로그인을 해주세요");
+            window.location.href="/login.html";
+        }
     }
 </script>
 

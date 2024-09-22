@@ -31,6 +31,7 @@ public class MainController {
 			SortType type = SortType.valueOf(sortType);
 			return studyPostSearchService.searchStudyPostList(type, page, size);
 		}
+
 	}
 	@GetMapping("/studyPost")
 	public void getStudyPost() {
