@@ -39,7 +39,7 @@ public class StudyPostServiceImpl implements StudyPostService {
         if (userDto == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authenticated");
         }
-        return userDto.getUserId();  // 세션에서 UserDto의 userId 반환
+        return userDto.getUserId();
     }
 
     @Transactional
