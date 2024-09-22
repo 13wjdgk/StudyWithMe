@@ -23,14 +23,14 @@ public class StudyPostServiceImpl implements StudyPostService {
     private final StudyPostRepository studyPostRepository;
     private final CategoryRepository categoryRepository;
     private final UsersRepository userRepository;
-    private final HttpSession session;  // 세션 추가
+    private final HttpSession session;
 
     @Autowired
     public StudyPostServiceImpl(StudyPostRepository studyPostRepository, CategoryRepository categoryRepository, UsersRepository userRepository, HttpSession session) {
         this.studyPostRepository = studyPostRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
-        this.session = session;  // 세션 주입
+        this.session = session;
     }
 
     // 세션에서 현재 로그인된 사용자 ID 가져오기
@@ -39,7 +39,7 @@ public class StudyPostServiceImpl implements StudyPostService {
         if (userDto == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authenticated");
         }
-        return userDto.getUserId();  // 세션에서 UserDto의 userId 반환*/
+        return userDto.getUserId();
 
     }
 
@@ -75,7 +75,7 @@ public class StudyPostServiceImpl implements StudyPostService {
         studyPost.setEndDate(studyPostDto.getEndDate());
         studyPost.setDeadline(studyPostDto.getDeadline());
         studyPost.setMaxMembers(studyPostDto.getMaxMembers());
-        studyPost.setCreatedAt(new Timestamp(System.currentTimeMillis()));  // 현재 시각 자동 생성
+        studyPost.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         studyPost.setCategory(savedCategory);  // 저장된 카테고리 연결
         studyPost.setUser(user);  // 로그인된 사용자 정보 연결
 
@@ -129,13 +129,6 @@ public class StudyPostServiceImpl implements StudyPostService {
         StudyPost studyPost = studyPostRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + postId));
 
-        /*// 세션에서 현재 로그인된 사용자 정보 설정
-        String currentUserId = getCurrentUserIdFromSession();
-
-        // DTO 변환 후 로그인된 사용자 ID를 설정
-        StudyPostDTO resultDto = convertToDto(studyPost);
-        resultDto.setCurrentUserId(currentUserId);  // 세션에서 가져온 유저 ID 설정
-        return resultDto;*/
         return convertToDto(studyPost);
     }
 
