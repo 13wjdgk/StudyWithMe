@@ -25,9 +25,8 @@ public class MainController {
 	public List<StudyPostDTO> getStudyPostList(@PathVariable String sortType, @PathVariable int page,@PathVariable int size, HttpSession session) {
 		if(sortType.equals("RECOMMEND")){
 			UserDto userDto = (UserDto) session.getAttribute("userDto");
-			List<StudyPostDTO> list = studyPostSearchService.searchRecommendStudyPostList(page, size, userDto.getUserId());
-			System.out.println("list : "+list);
-			return list;
+			return studyPostSearchService.searchRecommendStudyPostList(page, size, userDto.getUserId());
+
 		}else{
 			SortType type = SortType.valueOf(sortType);
 			return studyPostSearchService.searchStudyPostList(type, page, size);
