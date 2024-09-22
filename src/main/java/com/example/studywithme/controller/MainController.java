@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.studywithme.dto.StudyPostDTO;
+import com.example.studywithme.dto.UserDto;
 import com.example.studywithme.enums.SortType;
 import com.example.studywithme.service.StudyPostSearchService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,9 +22,16 @@ import lombok.RequiredArgsConstructor;
 public class MainController {
 	private final StudyPostSearchService studyPostSearchService;
 	@GetMapping("/{sortType}/{page}/{size}")
-	public List<StudyPostDTO> getStudyPostList(@PathVariable String sortType, @PathVariable int page,@PathVariable int size) {
-		SortType type = SortType.valueOf(sortType);
-		return studyPostSearchService.searchStudyPostList(type, page, size, "sh5017");
+	public List<StudyPostDTO> getStudyPostList(@PathVariable String sortType, @PathVariable int page,@PathVariable int size, HttpSession session) {
+		if(sortType.equals("RECOMMEND")){
+			UserDto userDto = (UserDto) session.getAttribute("userDto");
+			return studyPostSearchService.searchRecommendStudyPostList(page, size, userDto.getUserId());
+
+		}else{
+			SortType type = SortType.valueOf(sortType);
+			return studyPostSearchService.searchStudyPostList(type, page, size);
+		}
+
 	}
 	@GetMapping("/studyPost")
 	public void getStudyPost() {

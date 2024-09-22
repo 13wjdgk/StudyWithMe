@@ -151,14 +151,20 @@ public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 		+ "FROM ( SELECT post.post_id, post.title, post.description, post.study_type, post.study_date, post.end_date, post.deadline, post.max_members, post.created_at, post.user_id, c.category_id, c.language, c.certification, c.major, c.career, c.exam, c.hobbies, c.programming, c.self_directed, c.etc, c.meet_type "
 		+ "FROM Study_Posts post JOIN Category c ON post.category_id = c.category_id ) as sc "
 		+ ", Category c1  WHERE c1.category_id = :categoryId  and "
-		+ "(sc.language = c1.language OR sc.certification = c1.certification OR sc.major = c1.major OR sc.career = c1.career OR sc.exam = c1.exam OR sc.hobbies = c1.hobbies OR sc.programming = c1.programming OR sc.self_directed = c1.self_directed OR sc.etc = c1.etc OR sc.meet_type = c1.meet_type) "
+		+ "        ((sc.language = c1.language AND c1.language = true) OR (sc.certification = c1.certification and  c1.certification = true)  OR (sc.major = c1.major  AND c1.major = true) "
+		+ "        OR (sc.career = c1.career  AND c1.career = true)  OR (sc.exam = c1.exam  AND c1.exam = true) OR (sc.hobbies = c1.hobbies AND c1.hobbies = true) "
+		+ "        OR (sc.programming = c1.programming AND c1.programming = true)OR (sc.self_directed = c1.self_directed AND c1.self_directed = true) OR ( sc.etc = c1.etc AND c1.etc = true)"
+		+ "        OR sc.meet_type = c1.meet_type) "
 		,
 
-		countQuery = "SELECT count(*) FROM ( SELECT post.post_id, post.title, post.description, post.study_type, post.study_date, post.end_date, post.deadline, post.max_members, post.created_at, post.user_id, c.category_id, c.language, c.certification, c.major, c.career, c.exam, c.hobbies, c.programming, c.self_directed, c.etc, c.meet_type "
+		countQuery = "SELECT count(*) "
+			+ "FROM ( SELECT post.post_id, post.title, post.description, post.study_type, post.study_date, post.end_date, post.deadline, post.max_members, post.created_at, post.user_id, c.category_id, c.language, c.certification, c.major, c.career, c.exam, c.hobbies, c.programming, c.self_directed, c.etc, c.meet_type "
 			+ "FROM Study_Posts post JOIN Category c ON post.category_id = c.category_id ) as sc "
 			+ ", Category c1  WHERE c1.category_id = :categoryId  and "
-			+ "(sc.language = c1.language OR sc.certification = c1.certification OR sc.major = c1.major OR sc.career = c1.career OR sc.exam = c1.exam OR sc.hobbies = c1.hobbies OR sc.programming = c1.programming OR sc.self_directed = c1.self_directed OR sc.etc = c1.etc OR sc.meet_type = c1.meet_type) "
-		,
+			+ "        ((sc.language = c1.language AND c1.language = true) OR (sc.certification = c1.certification and  c1.certification = true)  OR (sc.major = c1.major  AND c1.major = true) "
+			+ "        OR (sc.career = c1.career  AND c1.career = true)  OR (sc.exam = c1.exam  AND c1.exam = true) OR (sc.hobbies = c1.hobbies AND c1.hobbies = true) "
+			+ "        OR (sc.programming = c1.programming AND c1.programming = true)OR (sc.self_directed = c1.self_directed AND c1.self_directed = true) OR ( sc.etc = c1.etc AND c1.etc = true)"
+			+ "        OR sc.meet_type = c1.meet_type) ",
 		nativeQuery = true)
 	Page<Object[]> findAllByCategory(int categoryId, Pageable pageable);
 

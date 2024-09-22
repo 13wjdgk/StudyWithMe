@@ -26,16 +26,12 @@ public class StudyPostSearchService {
 	private final UsersRepository usersRepository;
 	private final ViewCountRepository viewCountService;
 	private final CategoryRepository categoryRepository;
-	public List<StudyPostDTO> searchStudyPostList(SortType sortType , int page, int size,String userId) {
-		User user = usersRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+	public List<StudyPostDTO> searchStudyPostList(SortType sortType , int page, int size) {
 		if(sortType.equals(SortType.LATEST)){
 			return studyPostRepository.findAllSortedByLatest(page, size);
 		}
 		else if(sortType.equals(SortType.POPULAR)){
 			return studyPostRepository.findAllSortedByViewCount(page, size);
-		}
-		else if(sortType.equals(SortType.RECOMMEND)){
-			return studyPostRepository.findAllSortedByRecommend(page, size,user.getCategory().getCategoryId());
 		}
 		else if(sortType.equals(SortType.OLDEST)){
 			return studyPostRepository.findAllSortedByOldest(page, size);
@@ -43,6 +39,10 @@ public class StudyPostSearchService {
 
 		return null;
 
+	}
+	public List<StudyPostDTO> searchRecommendStudyPostList(int page, int size,String userId) {
+		User user = usersRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+		return studyPostRepository.findAllSortedByRecommend(page, size,user.getCategory().getCategoryId());
 	}
 	public void createStudyPost(){
 		User user = usersRepository.findById("user006").orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
