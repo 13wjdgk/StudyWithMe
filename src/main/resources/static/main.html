@@ -13,12 +13,22 @@
             color: #333; /* 기본 텍스트 색상 */
         }
         .header {
-            background-color: #FFF34F; /* 포인트 컬러 노란색 */
-            color: #333;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 5px solid #FFF34F; /* 하단 강조 색상 */
+            display: flex; /* Flexbox를 사용하여 가로 정렬 */
+            flex-direction: column; /* 기본 방향은 세로로 */
+            align-items: center; /* 중앙 정렬 */
             position: relative;
+            padding: 30px;
+        }
+
+        .header-buttons {
+            display: flex; /* Flexbox로 버튼들을 가로로 정렬 */
+            justify-content: center; /* 버튼 사이 간격 조정 */
+            margin-top: 10px; /* 헤더와 버튼 사이 간격 추가 */
+        }
+
+        .header .auth-buttons,
+        .header .header-buttons {
+            margin: 10px 0; /* 버튼 그룹 사이 간격 추가 */
         }
         .header h1 {
             margin: 0;
@@ -28,18 +38,19 @@
             top: 20px;
             right: 20px;
         }
-        .header .auth-buttons a {
+        .header .auth-buttons a , .header .auth-buttons button {
             margin: 0 10px;
             padding: 10px 20px;
-            color: #FFF34F; /* 포인트 컬러 노란색 */
+            color: #000;
             text-decoration: none;
             font-weight: bold;
             border: 2px solid #FFF34F; /* 포인트 컬러 노란색 테두리 */
+            background-color: white;
             border-radius: 5px;
         }
-        .header .auth-buttons a:hover {
+        .header a:hover , .header button:hover {
             background-color: #E6E600; /* 포인트 컬러의 어두운 톤 */
-            color: #fff;
+            color: #000;
         }
         .container {
             padding: 20px;
@@ -48,7 +59,7 @@
             display: inline-block;
             padding: 12px 24px;
             margin: 10px 0;
-            color: #fff;
+            color: #000;
             background-color: #FFF34F; /* 포인트 컬러 노란색 */
             border: none;
             border-radius: 5px;
@@ -56,9 +67,9 @@
             text-decoration: none;
             font-weight: bold;
         }
-        .button:hover {
-            background-color: #E6E600; /* 포인트 컬러의 어두운 톤 */
-        }
+        /*.button:hover {*/
+        /*    background-color: #E6E600; !* 포인트 컬러의 어두운 톤 *!*/
+        /*}*/
         .section {
             background-color: #fff; /* 섹션 배경을 흰색으로 */
             padding: 20px;
@@ -80,25 +91,118 @@
         .container {
             padding: 20px;
         }
+        /* 카드 스타일 */
         .card {
             background-color: #fff; /* 카드 배경을 흰색으로 */
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+            border-radius: 8px; /* 둥근 모서리 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
             padding: 20px;
             margin-bottom: 20px;
-            transition: box-shadow 0.3s ease;
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* 부드러운 애니메이션 */
         }
+
+        /* 카드 호버 시 */
         .card:hover {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 확대 */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 확대 */
+            transform: translateY(-5px); /* 호버 시 살짝 위로 떠오르는 효과 */
         }
+
+        /* 카드 제목 스타일 */
         .card h2 {
-            margin: 0 0 10px 0;
-            color: #333;
+            margin: 0 0 10px;
+            font-size: 1.5em;
+            color: #333; /* 텍스트 색상 */
+            font-weight: bold;
         }
+
+        /* 카드 설명 텍스트 스타일 */
         .card p {
-            margin: 0;
-            color: #555;
+            margin: 0 0 10px;
+            font-size: 1em;
+            color: #666; /* 설명 텍스트 색상 */
         }
+
+        /* 태그 컨테이너 */
+        .tags {
+            margin-top: 10px;
+        }
+
+        /* 태그 스타일 */
+        .tags span {
+            display: inline-block;
+            margin-right: 8px;
+            padding: 5px 10px;
+            font-size: 0.9em;
+            color: #fff; /* 태그 텍스트 색상 */
+            background-color: #FFA500; /* 태그 배경색 */
+            border-radius: 20px; /* 둥근 테두리 */
+            font-weight: bold;
+        }
+
+        /* 다양한 태그 색상 (각 태그에 클래스 추가하여 구분 가능) */
+        .tags .programming {
+            background-color: #4CAF50; /* 프로그래밍 태그 */
+        }
+        .tags .career {
+            background-color: #2196F3; /* 취업 태그 */
+        }
+        .tags .language {
+            background-color: #FF5722; /* 언어 태그 */
+        }
+        .tags .hobbies {
+            background-color: #9C27B0; /* 취미 태그 */
+        }
+        .tags .selfDirected {
+            background-color: #FFC107; /* 자기계발 태그 */
+        }
+        .tags .major {
+            background-color: #d9534f; /* 전공 태그 */
+        }
+        .tags .certification {
+            background-color: #218838; /* 자격증 태그 */
+        }
+
+
+        /* select 박스 포커스 시 */
+        .sort-select {
+            padding: 30px;
+        }
+
+        /* select 박스 스타일 */
+        .sort-select select {
+            appearance: none; /* 기본 select 화살표 제거 (모든 브라우저에서 통일된 디자인을 위해) */
+            width: 150px;
+            padding: 10px;
+            border: 2px solid #FFF34F; /* 포인트 컬러 테두리 */
+            border-radius: 5px; /* 둥근 모서리 */
+            background-color: #fff; /* 배경색 흰색 */
+            color: #333; /* 텍스트 색상 */
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none; /* 포커스 시 외곽선 제거 */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* select 박스 호버 시 */
+        .sort-select select:hover {
+            border-color: #E6E600; /* 포인트 컬러의 어두운 톤 */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* 가벼운 그림자 효과 */
+        }
+
+        /* select 박스 포커스 시 */
+        .sort-select select:focus {
+            border-color: #FFCC00; /* 포커스 시 테두리 색상 변경 */
+            box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); /* 포커스 시 그림자 효과 */
+        }
+
+        /* option 스타일 (브라우저 별로 제한적이나 가능할 경우 스타일 적용됨) */
+        .sort-select select option {
+            padding: 10px;
+            background-color: #fff; /* 옵션 배경색 */
+            color: #333; /* 옵션 텍스트 색상 */
+        }
+
     </style>
 </head>
 <body>
@@ -106,8 +210,11 @@
     <h1>StudyWithMe</h1>
     <div class="auth-buttons" id="auth-buttons">
         <!-- 로그인 및 회원가입 버튼은 로그인 상태에 따라 동적으로 표시됩니다. -->
+        <button class="button" id="writeBtn" onclick="location.href='write.html'">글 작성</button>
+        <button class="button" id="chatBtn" onclick="location.href='room.html'">채팅 목록</button>
         <a href="login.html" id="login-btn">로그인 및 회원가입 </a>
         <a href="mypage.html" id="mypage-btn" style="display: none;">마이페이지</a>
+        <button id="logout-btn" style="display: none;">로그아웃</button>
     </div>
 </div>
 <div class="sort-select">
@@ -119,9 +226,9 @@
         <option value="RECOMMEND" id="recommendedOption">추천순</option>
     </select>
 </div>
+
 <div class="container" id="cards-container">
 
-    <!-- API로부터 받은 데이터로 카드가 동적으로 추가됩니다. -->
 </div>
 <script>
     // 글작성, 채팅목록,공고글 페이지이동
@@ -133,29 +240,45 @@
         major: "전공",
         programming: "프로그래밍",
         hobbies: "취미",
-        selfDirected: "자기계발"
+        selfDirected: "자기계발",
+        certification: "자격증",
     };
     window.onload = function() {
         const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
         const mypageBtn = document.getElementById('mypage-btn');
+        const writeBtn = document.getElementById('writeBtn');
+        const chatBtn = document.getElementById('chatBtn');
+
         const userDto = sessionStorage.getItem("userDto");
-        fetchAnnouncements();
         if (userDto != null) {
+            console.log("userDto : "+userDto);
             // 로그인 상태일 경우 마이페이지 버튼을 보이게 하고, 다른 버튼들은 숨김
             mypageBtn.style.display = 'inline-block';
+            writeBtn.style.display = 'inline-block';
+            chatBtn.style.display = 'inline-block';
+            logoutBtn.style.display = 'inline-block';
             loginBtn.style.display = 'none';
+            sortOptions.querySelector('option[value="RECOMMEND"]').disabled = false;
         } else {
+            console.log("userDto : "+null);
             // 로그아웃 상태일 경우 로그인 및 회원가입 버튼을 보이게 함
             mypageBtn.style.display = 'none';
+            chatBtn.style.display = 'none';
+            writeBtn.style.display = 'none';
+            logoutBtn.style.display = 'none';
             loginBtn.style.display = 'inline-block';
+            sortOptions.querySelector('option[value="RECOMMEND"]').disabled = true;
         }
+        fetchAnnouncements(sortOptions.value); // 초기 데이터 로드
     };
-    fetchAnnouncements(sortOptions.value); // 초기 데이터 로드
+
     sortOptions.addEventListener('change', function() {
-        fetchAnnouncements(this.value); // 정렬 기준이 변경될 때마다 데이터 로드
+        fetchAnnouncements(sortOptions.value); // 정렬 기준이 변경될 때마다 데이터 로드
     });
     async function fetchAnnouncements(sortOption) {
         try {
+            console.log("options : "+sortOption);
             let url = '/StudyList/'+sortOption+'/0/10';
             // if (sortOption!=RECOMMEND) {
             //     url = `/StudyList/${sortOption}/0/10`;
@@ -181,13 +304,18 @@
             await data.forEach(announcement => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                console.log(announcement);
 
                 let tags = '';
                 for (const [key, value] of Object.entries(announcement)) {
+
                     if (value === true) {
-                        tags += `<span>#${tagMap[key]}</span>`;
+                        console.log(key);
+                        // tagMap에 있는 key 값에 맞춰 태그를 생성하고, key를 class로 설정
+                        tags += `<span class="${key}">#${tagMap[key]}</span>`;
                     }
                 }
+
 
                 // 카드 내용 추가
                 card.innerHTML = `
@@ -196,6 +324,10 @@
                         <div class="tags">${tags}</div>
                     `;
 
+                card.style.cursor = 'pointer'; // 마우스 커서를 포인터로 변경
+                card.addEventListener('click', () => {
+                    window.location.href = `/detail.html?postId=${announcement.postId}`;
+                });
                 // 카드 컨테이너에 추가
                 container.appendChild(card);
             });
@@ -203,8 +335,19 @@
             console.error('Error fetching announcements:', error);
         }
     }
+
+    document.getElementById("logout-btn").addEventListener("click", function () {
+        if ( sessionStorage.getItem("userDto") == null ){
+            alert("이미 로그아웃 되었습니다.");
+        } else {
+            sessionStorage.removeItem('userDto');
+            alert('로그아웃 되었습니다.');
+        }
+        // 로그인 페이지로 이동
+        window.location.href = "/main.html";
+    });
         // 페이지 로드 시 카드 데이터를 가져옴
-        window.onload = fetchAnnouncements;
+       // window.onload = fetchAnnouncements;
 </script>
 </body>
 </html>
