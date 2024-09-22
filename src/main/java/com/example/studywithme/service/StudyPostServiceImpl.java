@@ -64,7 +64,7 @@ public class StudyPostServiceImpl implements StudyPostService {
         // 2. 유저 정보 설정 (세션에서 ID 가져오기)
         String currentUserId = getCurrentUserIdFromSession();
         User user = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         // 3. 글 작성 정보 설정
         StudyPost studyPost = new StudyPost();
@@ -89,7 +89,7 @@ public class StudyPostServiceImpl implements StudyPostService {
     @Override
     public StudyPostDTO updateStudyPost(int postId, StudyPostDTO studyPostDto) {
         StudyPost studyPost = studyPostRepository.findById(postId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid post ID: " + postId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid post ID: " + postId));
 
         // 세션에서 현재 로그인된 사용자와 글 작성자 비교
         String currentUserId = getCurrentUserIdFromSession();
@@ -113,7 +113,7 @@ public class StudyPostServiceImpl implements StudyPostService {
     @Override
     public void deleteStudyPost(int postId) {
         StudyPost studyPost = studyPostRepository.findById(postId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid post ID: " + postId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid post ID: " + postId));
 
         // 세션에서 현재 로그인된 사용자와 글 작성자 비교
         String currentUserId = getCurrentUserIdFromSession();
@@ -134,26 +134,26 @@ public class StudyPostServiceImpl implements StudyPostService {
 
     private StudyPostDTO convertToDto(StudyPost studyPost) {
         return new StudyPostDTO(
-                studyPost.getPostId(),
-                studyPost.getTitle(),
-                studyPost.getDescription(),
-                studyPost.getStudyType(),
-                studyPost.getStudyDate(),
-                studyPost.getEndDate(),
-                studyPost.getDeadline(),
-                studyPost.getMaxMembers(),
-                studyPost.getCreatedAt(),
-                studyPost.getCategory().getCategoryId(),
-                studyPost.getCategory().getLanguage(),
-                studyPost.getCategory().getCertification(),
-                studyPost.getCategory().getMajor(),
-                studyPost.getCategory().getCareer(),
-                studyPost.getCategory().getExam(),
-                studyPost.getCategory().getHobbies(),
-                studyPost.getCategory().getProgramming(),
-                studyPost.getCategory().getSelfDirected(),
-                studyPost.getCategory().getEtc(),
-                studyPost.getCategory().getMeetType().name()
+            studyPost.getPostId(),
+            studyPost.getTitle(),
+            studyPost.getDescription(),
+            studyPost.getStudyType(),
+            studyPost.getStudyDate(),
+            studyPost.getEndDate(),
+            studyPost.getDeadline(),
+            studyPost.getMaxMembers(),
+            studyPost.getCreatedAt(),
+            studyPost.getCategory().getCategoryId(),
+            studyPost.getCategory().getLanguage(),
+            studyPost.getCategory().getCertification(),
+            studyPost.getCategory().getMajor(),
+            studyPost.getCategory().getCareer(),
+            studyPost.getCategory().getExam(),
+            studyPost.getCategory().getHobbies(),
+            studyPost.getCategory().getProgramming(),
+            studyPost.getCategory().getSelfDirected(),
+            studyPost.getCategory().getEtc(),
+            studyPost.getCategory().getMeetType().name()
         );
     }
 }
