@@ -22,7 +22,7 @@ public class MainController {
 	@GetMapping("/{sortType}/{page}/{size}")
 	public List<StudyPostDTO> getStudyPostList(@PathVariable String sortType, @PathVariable int page,@PathVariable int size) {
 		SortType type = SortType.valueOf(sortType);
-		return studyPostSearchService.searchStudyPostList(type, page, size, "user006");
+		return studyPostSearchService.searchStudyPostList(type, page, size, "sh5017");
 	}
 	@GetMapping("/studyPost")
 	public void getStudyPost() {

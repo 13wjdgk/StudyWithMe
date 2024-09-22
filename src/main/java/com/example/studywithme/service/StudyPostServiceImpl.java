@@ -35,11 +35,12 @@ public class StudyPostServiceImpl implements StudyPostService {
 
     // 세션에서 현재 로그인된 사용자 ID 가져오기
     private String getCurrentUserIdFromSession() {
-        UserDto userDto = (UserDto) session.getAttribute("userDto");
+       UserDto userDto = (UserDto) session.getAttribute("userDto");
         if (userDto == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authenticated");
         }
         return userDto.getUserId();
+
     }
 
     @Transactional

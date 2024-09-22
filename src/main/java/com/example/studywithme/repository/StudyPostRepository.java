@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.example.studywithme.dto.StudyPostDTO;
 
 import com.example.studywithme.entity.StudyPost;
+import org.springframework.data.repository.query.Param;
 
 public interface StudyPostRepository extends JpaRepository<StudyPost, Integer> {
 	default List<StudyPostDTO> findAllSortedByLatest(int page, int size) {

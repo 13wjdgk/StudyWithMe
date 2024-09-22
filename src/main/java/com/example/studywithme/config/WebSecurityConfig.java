@@ -7,11 +7,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,48 +28,59 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 public class WebSecurityConfig implements HandlerInterceptor {
 
+
+    /*@Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers(String.valueOf(PathRequest.toStaticResources().atCommonLocations()));
+    }*/
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(auth -> auth
-                        .requestMatchers(
-                                new AntPathRequestMatcher("/studywithme/login", "POST"),
-                                new AntPathRequestMatcher("/studywithme/users", "GET"),
-                                new AntPathRequestMatcher("/studywithme/users", "POST"),
-                                new AntPathRequestMatcher("/studywithme/users", "PUT"),
-                                new AntPathRequestMatcher("/studywithme/userDetail", "POST"),
+                                .requestMatchers(
+                                        new AntPathRequestMatcher("/studywithme/login", "POST"),
+                                        new AntPathRequestMatcher("/studywithme/users", "GET"),
+                                        new AntPathRequestMatcher("/studywithme/users", "POST"),
+                                        new AntPathRequestMatcher("/studywithme/users", "PUT"),
+                                        new AntPathRequestMatcher("/studywithme/userDetail", "POST"),
 
-                                new AntPathRequestMatcher("/getNewPassword.html"),
-                                new AntPathRequestMatcher("/api/study-posts", "POST"),
-                                new AntPathRequestMatcher("/api/study-posts/{postId}", "PUT"),
-                                new AntPathRequestMatcher("/api/study-posts/{postId}", "DELETE"),
-                                new AntPathRequestMatcher("/api/study-posts/{postId}", "GET"),
-                                new AntPathRequestMatcher("/index.html"),
-                                new AntPathRequestMatcher("/register.html"),
-                                new AntPathRequestMatcher("/room.html"),
-                                new AntPathRequestMatcher("/ChatRoomDetail.html"),
-                                new AntPathRequestMatcher("/chat/room/**", "GET"),  // 채팅 리스트 화면
-                                new AntPathRequestMatcher("/chat/room", "POST")   , // 채팅방 생성
-                                new AntPathRequestMatcher("/chat/chatting", "GET"),
-                                new AntPathRequestMatcher("/room/{roomId}", "DELETE"),  // 새로 추가된 DELETE 요청
+                                        new AntPathRequestMatcher("/getNewPassword.html"),
+                                        new AntPathRequestMatcher("/api/study-posts", "POST"),
+                                        new AntPathRequestMatcher("/api/study-posts/{postId}", "PUT"),
+                                        new AntPathRequestMatcher("/api/study-posts/{postId}", "DELETE"),
+                                        new AntPathRequestMatcher("/api/study-posts/{postId}", "GET"),
+                                        new AntPathRequestMatcher("/index.html"),
+                                        new AntPathRequestMatcher("/register.html"),
+                                        new AntPathRequestMatcher("/room.html"),
+                                        new AntPathRequestMatcher("/ChatRoomDetail.html"),
+                                        new AntPathRequestMatcher("/chat/room/**", "GET"),
+                                        new AntPathRequestMatcher("/chat/room/**", "DELETE"),
+                                        new AntPathRequestMatcher("/chat/room/**", "POST"),  //// 채팅 리스트 화면
+                                       // new AntPathRequestMatcher("/chat/room", "POST")   , // 채팅방 생성
+                                        new AntPathRequestMatcher("/chatting/chat_log/**", "GET"),
 
-                                new AntPathRequestMatcher("/write.html"),
-                                new AntPathRequestMatcher("/detail.html"),
-                                new AntPathRequestMatcher("/edit.html"),
-                                new AntPathRequestMatcher("/register.html"),
-                                new AntPathRequestMatcher("/mypage.html"),
-                            new AntPathRequestMatcher("/main.html"),
-                            new AntPathRequestMatcher("/StudyList/**", "GET"), new AntPathRequestMatcher("/login.html", "GET")
+                                        new AntPathRequestMatcher("/write.html"),
+                                        new AntPathRequestMatcher("/detail.html"),
+                                        new AntPathRequestMatcher("/edit.html"),
+                                        new AntPathRequestMatcher("/register.html"),
+                                        new AntPathRequestMatcher("/mypage.html"),
+                                        new AntPathRequestMatcher("/main.html"),
+                                        new AntPathRequestMatcher("/StudyList/**", "GET"),
+                                        new AntPathRequestMatcher("/ws-stomp/**"),
+                                        new AntPathRequestMatcher("/webjars/**"),
+
+                                        new AntPathRequestMatcher("/login.html", "GET")
 
 
 //                                new AntPathRequestMatcher("/static/register.html"),
 //                                new AntPathRequestMatcher("/mypage.html"),
-                                //new AntPathRequestMatcher("/static/login.html")
+                                        //new AntPathRequestMatcher("/static/login.html")
 
 
-                        ).permitAll()
-                        .anyRequest().authenticated()
+                                ).permitAll()
+                                .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/main.html")
