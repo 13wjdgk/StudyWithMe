@@ -35,11 +35,12 @@ public class StudyPostServiceImpl implements StudyPostService {
 
     // 세션에서 현재 로그인된 사용자 ID 가져오기
     private String getCurrentUserIdFromSession() {
-        UserDto userDto = (UserDto) session.getAttribute("userDto");
+       UserDto userDto = (UserDto) session.getAttribute("userDto");
         if (userDto == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authenticated");
         }
-        return userDto.getUserId();  // 세션에서 UserDto의 userId 반환
+        return userDto.getUserId();  // 세션에서 UserDto의 userId 반환*/
+
     }
 
     @Transactional
@@ -128,13 +129,14 @@ public class StudyPostServiceImpl implements StudyPostService {
         StudyPost studyPost = studyPostRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + postId));
 
-        // 세션에서 현재 로그인된 사용자 정보 설정
+        /*// 세션에서 현재 로그인된 사용자 정보 설정
         String currentUserId = getCurrentUserIdFromSession();
 
         // DTO 변환 후 로그인된 사용자 ID를 설정
         StudyPostDTO resultDto = convertToDto(studyPost);
         resultDto.setCurrentUserId(currentUserId);  // 세션에서 가져온 유저 ID 설정
-        return resultDto;
+        return resultDto;*/
+        return convertToDto(studyPost);
     }
 
     private StudyPostDTO convertToDto(StudyPost studyPost) {
