@@ -40,6 +40,12 @@ public class WebSecurityConfig implements HandlerInterceptor {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(auth -> auth
                                 .requestMatchers(
+                                        new AntPathRequestMatcher("/swagger-ui/**"),
+                                        new AntPathRequestMatcher("/v3/api-docs/**"),
+                                        new AntPathRequestMatcher("/swagger-resources/**"),
+                                        new AntPathRequestMatcher("/swagger-ui.html"),
+                                        new AntPathRequestMatcher("/swagger-ui/index.html"),
+
                                         new AntPathRequestMatcher("/studywithme/login", "POST"),
                                         new AntPathRequestMatcher("/studywithme/users", "GET"),
                                         new AntPathRequestMatcher("/studywithme/users", "POST"),
@@ -72,6 +78,7 @@ public class WebSecurityConfig implements HandlerInterceptor {
                                         new AntPathRequestMatcher("/webjars/**"),
 
                                         new AntPathRequestMatcher("/login.html", "GET")
+
 
 
 //                                new AntPathRequestMatcher("/static/register.html"),
