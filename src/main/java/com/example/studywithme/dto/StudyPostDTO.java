@@ -37,6 +37,7 @@ public class StudyPostDTO {
 	private MeetType meetType;
 	private int viewCount = 0;
 	private String currentUserId;
+	private String writerId;
 
 	public StudyPostDTO(Integer postId, String title, String description, String studyType, Date studyDate,
 		Date endDate, Date deadline, Integer maxMembers, Timestamp createdAt, int categoryId,
@@ -90,5 +91,29 @@ public class StudyPostDTO {
 		this.viewCount = viewCount;
 	}
 
-
+	public StudyPostDTO(Integer postId, String title, String description, String studyType, Date studyDate, Date endDate, Date deadline, Integer maxMembers,
+		Timestamp createdAt, int categoryId, Boolean language, Boolean certification, Boolean major, Boolean career,
+		Boolean exam, Boolean hobbies, Boolean programming, Boolean selfDirected, Boolean etc, String meetType, String userId) {
+		this.postId = postId;
+		this.title = title;
+		this.description = description;
+		this.studyType = studyType;
+		this.studyDate = studyDate;
+		this.endDate = endDate;
+		this.deadline = deadline;
+		this.maxMembers = maxMembers;
+		this.createdAt = createdAt;
+		this.categoryId = categoryId;
+		this.language = language;
+		this.certification = certification;
+		this.major = major;
+		this.career = career;
+		this.exam = exam;
+		this.hobbies = hobbies;
+		this.programming = programming;
+		this.selfDirected = selfDirected;
+		this.etc = etc;
+		this.meetType = MeetType.valueOf(meetType);
+		this.writerId = userId;
+	}
 }

@@ -74,10 +74,14 @@ public class ChattingRoomService {
                 return chatRoomResult;
             }
             chattingParticipant.setUser(user);
+            chattingParticipantRepository.save(chattingParticipant);
+
+            ChattingParticipant chattingParticipantWriter=new ChattingParticipant();
+            chattingParticipantWriter.setChatRoom(chattingRoom);
             User user2=new User();
             user2.setUserId(studyPost.getUser().getUserId());
-            chattingParticipant.setUser(user2);
-            chattingParticipantRepository.save(chattingParticipant);
+            chattingParticipantWriter.setUser(user2);
+            chattingParticipantRepository.save(chattingParticipantWriter);
             ChatRoomDto nChatDto=new ChatRoomDto();
             nChatDto.setRoomId(chattingRoom.getChatroomId());
             nChatDto.setOriginUserId(studyPost.getUser().getUserId());

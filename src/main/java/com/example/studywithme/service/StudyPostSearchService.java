@@ -71,16 +71,12 @@ public class StudyPostSearchService {
 		studyPost.setDeadline(date);
 		studyPost.setCategory(categoryRepository.save(category));
 		studyPost.setUser(user);
-		StudyPost savedStudyPost = studyPostRepository.save(studyPost);
-		ViewCount viewCount = new ViewCount();
-		viewCount.setPostId(savedStudyPost.getPostId());
-		viewCount.setCount(0);
-		viewCountService.save(viewCount);
+
 
 	}
 	public void getStudyPost(int postId){
 
-		ViewCount viewCount = viewCountService.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+		ViewCount viewCount = viewCountService.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글의 뷰카운트 존재하지 않습니다."));
 		viewCount.setCount(viewCount.getCount()+1);
 		viewCountService.save(viewCount);
 	}

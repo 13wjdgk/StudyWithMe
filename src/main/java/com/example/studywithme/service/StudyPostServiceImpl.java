@@ -5,9 +5,12 @@ import com.example.studywithme.dto.UserDto;
 import com.example.studywithme.entity.Category;
 import com.example.studywithme.entity.StudyPost;
 import com.example.studywithme.entity.User;
+import com.example.studywithme.entity.ViewCount;
 import com.example.studywithme.repository.CategoryRepository;
 import com.example.studywithme.repository.StudyPostRepository;
 import com.example.studywithme.repository.UsersRepository;
+import com.example.studywithme.repository.ViewCountRepository;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,13 +27,17 @@ public class StudyPostServiceImpl implements StudyPostService {
     private final CategoryRepository categoryRepository;
     private final UsersRepository userRepository;
     private final HttpSession session;
+    private final ViewCountRepository viewCountRepository;
+    private final StudyPostSearchService studyPostSearchService;
 
     @Autowired
-    public StudyPostServiceImpl(StudyPostRepository studyPostRepository, CategoryRepository categoryRepository, UsersRepository userRepository, HttpSession session) {
+    public StudyPostServiceImpl(StudyPostRepository studyPostRepository, CategoryRepository categoryRepository, UsersRepository userRepository, HttpSession session, ViewCountRepository viewCountRepository, StudyPostSearchService studyPostSearchService) {
         this.studyPostRepository = studyPostRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.session = session;
+        this.viewCountRepository = viewCountRepository;
+        this.studyPostSearchService = studyPostSearchService;
     }
 
     // 세션에서 현재 로그인된 사용자 ID 가져오기
@@ -81,6 +88,10 @@ public class StudyPostServiceImpl implements StudyPostService {
 
         // 스터디 포스트 저장
         StudyPost savedPost = studyPostRepository.save(studyPost);
+        ViewCount viewCount = new ViewCount();
+        viewCount.setPostId(savedPost.getPostId());
+        viewCount.setCount(0);
+        viewCountRepository.save(viewCount);
 
         // 저장된 StudyPost를 DTO로 변환하여 반환
         return convertToDto(savedPost);
@@ -128,7 +139,8 @@ public class StudyPostServiceImpl implements StudyPostService {
     public StudyPostDTO getStudyPostById(int postId) {
         StudyPost studyPost = studyPostRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + postId));
-
+        System.out.println("postID : "+postId);
+        studyPostSearchService.getStudyPost(postId);
         return convertToDto(studyPost);
     }
 
@@ -153,7 +165,8 @@ public class StudyPostServiceImpl implements StudyPostService {
             studyPost.getCategory().getProgramming(),
             studyPost.getCategory().getSelfDirected(),
             studyPost.getCategory().getEtc(),
-            studyPost.getCategory().getMeetType().name()
+            studyPost.getCategory().getMeetType().name(),
+            studyPost.getUser().getUserId()
         );
     }
 }
