@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- ConsoleAppender: 로그를 콘솔에 출력 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- RollingFileAppender: 로그를 파일로 저장하고 파일 크기에 따라 롤링 -->
+    <appender name="Visited_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>src/logs/studywithme.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 파일의 롤링 주기 및 형식 설정: 매일 새로운 파일 생성 -->
+            <fileNamePattern>logs/studywithme-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 파일 보존 기간 설정: 30일간 보관 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- RollingFileAppender: 로그를 파일로 저장하고 파일 크기에 따라 롤링 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>src/logs/systemLog.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 파일의 롤링 주기 및 형식 설정: 매일 새로운 파일 생성 -->
+            <fileNamePattern>logs/systemLog-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 파일 보존 기간 설정: 30일간 보관 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 로그 레벨 설정: root 레벨을 INFO로 설정 -->
+    <root level="INFO">
+        <!-- 콘솔과 파일로 로그 출력 -->
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+    <!-- 특정 패키지에 대해 로그 레벨을 조정 (예: DEBUG) -->
+    <logger name="visitedLogger" level="DEBUG" additivity="false">
+        <appender-ref ref="Visited_FILE" />
+    </logger>
+
+</configuration>

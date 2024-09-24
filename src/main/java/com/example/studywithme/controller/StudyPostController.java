@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/api/study-posts")
 public class StudyPostController {
@@ -39,7 +41,7 @@ public class StudyPostController {
 
     // 글 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<StudyPostDTO> getStudyPostById(@PathVariable int postId) {
+    public ResponseEntity<StudyPostDTO> getStudyPostById(@PathVariable int postId, HttpSession session) {
         StudyPostDTO studyPostDto = studyPostService.getStudyPostById(postId);
         return new ResponseEntity<>(studyPostDto, HttpStatus.OK);
     }
